@@ -3,22 +3,26 @@ var app = express();
 var expressWs = require('express-ws')(app);
 var os = require('os');
 var path = require('path');
-var pty = require('node-pty');
+var pty =  {};//require('node-pty');
 
 var terminals = {},
     logs = {};
 
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 app.use('/xterm', express.static(path.join(__dirname ,'node_modules/xterm/dist')));
 app.use('/zmodemjs', express.static(path.join(__dirname ,'node_modules/zmodem.js/dist')));
-app.use(express.static(path.join(__dirname, 'public')));
-
+app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 //var index = require('./routes/index');
 //var users = require('./routes/users');
 //app.use('/', index);
 //app.use('/users', users);
-
 app.get('/', function(req, res){
+  res.sendFile(__dirname + '/public/views/home.html');
+});
+app.get('/spider', function(req, res){
   res.sendFile(__dirname + '/public/index.html');
 });
 

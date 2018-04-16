@@ -1,0 +1,25 @@
+<div ng-controller="demoController">
+
+    <input ng-model="name"/>
+
+    <div class="form-group">
+        <div class='input-group date' my-date-time="{linkSelector:'#dtp1'}">
+            <input type='text' class="form-control" ng-model="aaaa"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+        </div>
+        <div class='input-group date' my-date-time id="dtp1">
+            <input type='text' class="form-control" ng-model="bbbb"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+        </div>
+        <div my-calendar="" style="width: 228px;"></div>
+    </div>
+    <div class="input-append date input-prepend">
+        <span class="add-on">起始时间</span>
+        <input class="uneditable-input" type="text" value="" ng-model="curDate"/>
+        <span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
+    </div>
+</div>
