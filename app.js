@@ -97,4 +97,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+var port = process.env.PORT || 3000,
+    host = os.platform() === 'win32' ? '127.0.0.1' : '0.0.0.0';
+
+console.log('App listening to http://' + host + ':' + port);
+app.listen(port, host);
