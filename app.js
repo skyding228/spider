@@ -8,8 +8,8 @@ var pty = require('node-pty');
 var terminals = {},
     logs = {};
 
-app.use('/xterm', express.static(__dirname + '/../../node_modules/xterm/dist'));
-app.use('/zmodemjs', express.static(__dirname + '/../../node_modules/zmodem.js/dist'));
+app.use('/xterm', express.static(path.join(__dirname ,'node_modules/xterm/dist')));
+app.use('/zmodemjs', express.static(path.join(__dirname ,'node_modules/zmodem.js/dist')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
