@@ -134,7 +134,7 @@ define('app', [ 'base'], function () {
             return [dep];
         }
 
-        $urlRouterProvider.when(/^\/?$/, '/hosts');
+        $urlRouterProvider.when(/^\/?$/, '/apps');
 
         $stateProvider
         //默认规则配置
@@ -161,6 +161,9 @@ define('init', ['app'], function (app) {
 
     app.controller('rootController', function ($rootScope, $timeout) {
         var condition = {}; //保存当前条件信息
+        $rootScope.menuClass = function(menu){
+            return window.location.hash.indexOf(menu) === 0 ? 'select' : '';
+        };
         //添加方法
         $rootScope.JSONStringify = JSON.stringify;
         //标签页切换

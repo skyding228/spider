@@ -26,17 +26,17 @@
 <body class="skin-blue sidebar-none fixed" ng-controller="rootController">
 
 <header class="main-header">
-    <a href="#/" class="logo">
+    <a class="logo">
         <img src="/public/imgs/favicon.png" style="padding-bottom: 5px;"> Spider
     </a>
     <nav class="navbar navbar-static-top" role="navigation">
         <!-- 菜单 -->
         <ul class="nav navbar-nav">
             <li class="dropdown messages-menu ">
-                <a href="#/hosts">主机</a>
+                <a href="#/hosts" ng-class="menuClass('#/hosts');">主机</a>
             </li>
             <li class="dropdown messages-menu ">
-                <a href="#/apps">应用</a>
+                <a href="#/apps" ng-class="menuClass('#/apps');">应用</a>
             </li>
 
             <!--<li class="dropdown messages-menu ">-->

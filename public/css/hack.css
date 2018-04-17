@@ -1005,3 +1005,10 @@ div.dlg-block {
 a{
     cursor: pointer;
 }
+
+.skin-blue .main-header .logo{
+    background-color: #3c8dbc !important;
+}
+.skin-blue .main-header .select{
+    background-color: #367fa9;
+}
