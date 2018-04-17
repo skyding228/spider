@@ -13,7 +13,10 @@ router.get('/hosts', function (req, res, next) {
     res.json(hosts.getHosts());
 });
 
-router.post('/push', function (req, res, next) {
+router.post('/collect', function (req, res, next) {
+    console.log('receive files from ' + req.body.host);
+    hosts.addHost(req.body.host);
+    files.addFiles(req.body.files,req.body.host.url);
     res.json(hosts.getHosts());
 });
 

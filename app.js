@@ -4,10 +4,13 @@ var expressWs = require('express-ws')(app);
 var os = require('os');
 var path = require('path');
 var pty =  {};//require('node-pty');
+var bodyParser = require('body-parser');
 
 var terminals = {},
     logs = {};
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use('/xterm', express.static(path.join(__dirname ,'node_modules/xterm/dist')));

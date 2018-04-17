@@ -14,13 +14,15 @@
 
 var hosts = {};
 var env = process.env;
-var master = env.MASTER;
+var master = 'http://localhost:3000';//env.MASTER;
 var _ = require('lodash');
-function localhost(){
+var config = require('./configuration');
+
+function localhost() {
     var local = {};
-    local.url = 'http://'+ env.IP + ':'+env.PORT;
+    local.url = 'http://' + env.IP + ':' + env.PORT;
     local.name = env.HOSTNAME || 'localhost';
-    if(master == local.url){
+    if (!master) {
         local.master = 1;
     }
     return local;
@@ -28,33 +30,46 @@ function localhost(){
 
 var local = localhost();
 
-function isMaster(){
+function isMaster() {
     return !!local.master;
 }
 
-function addHost(host){
+function addHost(host) {
+    host.update_at = new Date().getTime();
     hosts[host.url] = host;
 }
 
-function getMaster(){
+function addHosts(hosts) {
+    hosts.forEach(host=> {
+        addHost(host);
+    });
+}
+
+function getMaster() {
     return master;
 }
 
-function getLocal(){
+function getLocal() {
     return local;
 }
 
-function getHosts(){
+function getHosts() {
     addHost(local);
-    var nowHosts = hosts;
-    hosts = {};
-    return _.valuesIn(nowHosts);
+    var now = new Date().getTime();
+    for (var k in hosts) {
+        var host = hosts[k];
+        if (now - host.update_at > config.collect_interval_ms) {
+            delete hosts[k];
+        }
+    }
+    return _.valuesIn(hosts);
 }
 
 module.exports = {
-    addHost:addHost,
-    getMaster:getMaster,
-    getLocal:getLocal,
-    getHosts:getHosts,
-    isMaster:isMaster
+    addHost: addHost,
+    addHosts:addHosts,
+    getMaster: getMaster,
+    getLocal: getLocal,
+    getHosts: getHosts,
+    isMaster: isMaster
 };

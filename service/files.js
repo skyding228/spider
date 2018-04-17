@@ -17,7 +17,7 @@ var config = require('./configuration');
 var _ = require('lodash');
 var hosts = require('./hosts');
 var START_COLLECTION_TIME = new Date().getTime();
-
+var request = require('request');
 /**
  *
  * [{file}]
@@ -36,7 +36,7 @@ var FileMap = {};
 
 var SizeUnit = [' B', ' K', ' M', ' G', ' T'];
 function formatFileSize(size) {
-    if(size <= 0){
+    if (size <= 0) {
         return '0 B';
     }
     for (var i = 0; i < SizeUnit.length; i++) {
@@ -89,12 +89,14 @@ function addSegmentsAndUri(files, hostUrl) {
 
 function resoleUri(start, end) {
     var uri = null;
-    if (start.endsWith('/') || end.startsWith('/')) {
-        uri = start + end;
-    } else {
-        uri = start + '/' + end;
+    if (!start.endsWith('/')) {
+        start = start + '/';
     }
-    return uri.replace(/\/{2,}/g, '/');
+    if (end.startsWith('/')) {
+        end = end.substring(1);
+    }
+    uri = start + end;
+    return uri;
 }
 
 /**
@@ -125,7 +127,6 @@ function saveToFiles() {
     var now = new Date().getTime();
     //files collection finished,start next one
     if (now - START_COLLECTION_TIME > config.collect_interval_ms) {
-        addFiles(getLocalFiles(), hosts.getLocal().url);
         Files = _.valuesIn(FileMap);
         FileMap = {};
         START_COLLECTION_TIME = now;
@@ -148,8 +149,34 @@ function getFiles() {
     return Files;
 }
 
-// init to add local files
-addFiles(getLocalFiles(), hosts.getLocal().url);
+function sendFiles() {
+    try {
+        var files = getLocalFiles();
+        var host = hosts.getLocal();
+        var master = resoleUri(hosts.getMaster(), 'spider/collect');
+        console.log('send files to ' + master, files);
+        request({
+            uri: master,
+            method: 'POST',
+            json: {host: _.pick(host, 'url', 'name'), files: files}
+        }, function (err, resp, body) {
+            if (err) {
+                console.log('send to ' + master + ' err!', err);
+            } else {
+                try {
+                    hosts.addHosts(body);
+                } catch (e) {
+                    console.log('add hosts has a err!', e, body);
+                }
+            }
+        });
+    } catch (e) {
+        console.log('send file has a err!', e);
+    }
+    setTimeout(sendFiles, config.send_interval_ms);
+}
+setTimeout(sendFiles, config.send_interval_ms);
+
 module.exports = {
     addFiles: addFiles,
     getFiles: getFiles,

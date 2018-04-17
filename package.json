@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "adminlte": "^2.4.1",
-    "font-awesome": "~4.4.0",
     "angular": "^1.4.5",
     "angular-ui-ace": "^0.2.3",
     "angular-ui-router": "^0.2.15",
@@ -16,11 +15,13 @@
     "debug": "~2.2.0",
     "express": "~4.14.0",
     "express-ws": "^3.0.0",
+    "font-awesome": "~4.4.0",
     "jade": "~1.11.0",
     "jquery": "^2.1.4",
     "lodash": "^4.17.5",
     "morgan": "~1.7.0",
     "node-pty": "^0.7.2",
+    "request": "^2.85.0",
     "serve-favicon": "~2.3.0",
     "xterm": "^3.3.0",
     "zmodem.js": "^0.1.7"
