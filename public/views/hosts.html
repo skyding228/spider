@@ -1,6 +1,6 @@
 <div ng-controller="hostsController">
 
     <ul class="nav nav-stacked">
-        <li ng-repeat="host in hosts"><a href="{{host.url}}">{{host.name}} <span ng-show="{{host.local}}" class="pull-right badge bg-green">本机</span> <span ng-show="{{host.master}}" class="pull-right badge bg-blue">主节点</span></a></li>
+        <li ng-repeat="host in hosts"><a href="{{host.url}}">{{host.name}} <span ng-show="{{host.master}}" class="pull-right badge bg-blue">主节点</span></a></li>
     </ul>
 </div>

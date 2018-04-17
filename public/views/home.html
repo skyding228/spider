@@ -3,11 +3,12 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>FinLog</title>
+    <title>Spider</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/node_modules/adminlte/dist/css/AdminLTE.min.css"/>
     <link rel="stylesheet" href="/node_modules/adminlte/dist/css/skins/skin-blue.min.css"/>
+    <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="/public/css/hack.css"/>
     <link rel="stylesheet" href="/public/css/select2.css"/>
     <link rel="stylesheet" href="/public/css/select2-bootstrap.css"/>
@@ -26,7 +27,7 @@
 
 <header class="main-header">
     <a href="#/" class="logo">
-        <img src="/public/imgs/favicon.png" style="padding-bottom: 5px;"> FinLog
+        <img src="/public/imgs/favicon.png" style="padding-bottom: 5px;"> Spider
     </a>
     <nav class="navbar navbar-static-top" role="navigation">
         <!-- 菜单 -->
@@ -35,30 +36,28 @@
                 <a href="#/hosts">主机</a>
             </li>
             <li class="dropdown messages-menu ">
-                <a href="#/fileview">文件</a>
+                <a href="#/apps">应用</a>
             </li>
+
             <!--<li class="dropdown messages-menu ">-->
-            <!--<a href="#/trace">追踪</a>-->
+            <!--<a href="#/dashboard">仪表盘</a>-->
             <!--</li>-->
-            <li class="dropdown messages-menu ">
-                <a href="#/dashboard">仪表盘</a>
-            </li>
-            <li class="dropdown messages-menu">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">告警<span
-                        class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <ul class="menu">
-                            <li>
-                                <a href="#/warnrule">规则设置</a>
-                            </li>
-                            <li>
-                                <a href="#/warnerrdetail">告警详情</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
+            <!--<li class="dropdown messages-menu">-->
+            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">告警<span-->
+            <!--class="caret"></span></a>-->
+            <!--<ul class="dropdown-menu">-->
+            <!--<li>-->
+            <!--<ul class="menu">-->
+            <!--<li>-->
+            <!--<a href="#/warnrule">规则设置</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#/warnerrdetail">告警详情</a>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <!--</li>-->
         </ul>
 
 
@@ -66,23 +65,10 @@
             <ul class="nav navbar-nav">
                 <li class="dropdown user user-menu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><img
                         src="/public/imgs/user2-160x160.jpg" class="user-image" alt="User Image"> <span>{{user.loginName}}</span></a>
-                    <ul class="dropdown-menu">
-                        <li class="user-header"><img src="/public/imgs/user2-160x160.jpg" class="img-circle"
-                                                     alt="User Image">
-
-                            <p class="ng-binding">{{user.loginName}}</p></li>
-                        <li class="user-footer">
-                            <!--href="{{user.logout_url}}" 后端访问不了退出地址-->
-                            <div class="pull-right"><a href="/logout"
-                                                       class="btn btn-danger btn-flat"><i
-                                    class="fa fa-sign-out"></i>退出</a></div>
-                        </li>
-                    </ul>
                 </li>
             </ul>
         </div>
     </nav>
-
 
 </header>
 
@@ -91,8 +77,7 @@
         <div ui-view></div>
     </div>
 </div>
-<!--style="background: rgba(0,0,0,0);"-->
-<div id="infodialog" class="modal" >
+<div id="infodialog" class="modal">
     <div class="modal-dialog" style="text-align: center;">
         <div class="box box-warning" style="display: inline-block;width: auto;min-width: 300px;text-align: left;">
             <div class="box-header with-border"><h3 class="box-title">提示</h3>

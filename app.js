@@ -15,14 +15,13 @@ app.use('/zmodemjs', express.static(path.join(__dirname ,'node_modules/zmodem.js
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
-//var index = require('./routes/index');
-//var users = require('./routes/users');
-//app.use('/', index);
-//app.use('/users', users);
+var spider = require('./routes/spider');
+app.use('/spider', spider);
+
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/public/views/home.html');
 });
-app.get('/spider', function(req, res){
+app.get('/spiderweb-node', function(req, res){
   res.sendFile(__dirname + '/public/index.html');
 });
 
