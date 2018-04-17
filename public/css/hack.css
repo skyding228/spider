@@ -1002,3 +1002,6 @@ div.dlg-block {
 .box-header .box-title {
     padding-right: 80px;
 }
+a{
+    cursor: pointer;
+}

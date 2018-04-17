@@ -4,7 +4,7 @@
 require('app').register.controller('appsController', function ($scope, $myhttp, $timeout) {
     $scope.files = [];
     $scope.search = null;
-    $scope.pwd = '';
+    $scope.pwdSegments = [];
     var Files = [];
     $myhttp.get('/spider/files', function (data) {
         Files = data;
@@ -13,10 +13,10 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
 
     function searchFile() {
         var fileMap = {};
-        Files.forEach(fileSteps => {
-            var file = getFileName(fileSteps);
-            if(file){
-                fileMap[file.path || file] = file;
+        Files.forEach(file => {
+            var view = pickFileView(file);
+            if (view) {
+                fileMap[view.path] = view;
             }
         });
         var searchedFiles = [];
@@ -28,84 +28,88 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
 
     /**
      *
-     * @param fileSteps
+     * @param file
      * @returns {
-     *  name:short name,
+     *  name: show name,
      *  path:absolute path
      * }
      */
-    function getFileName(fileSteps) {
-        fileSteps = inPwdSteps(fileSteps);
-        if(!fileSteps){
+    function pickFileView(file) {
+        if (!isInPwd(file)) {
             return null;
         }
-        var step = null;
+        var view = {}, depth = getPwdDepth();
         if (!$scope.search) {
-            step = fileSteps[0];
-        }else{
-            for (var i = 0; i < fileSteps.length - 1; i++) {
-                if (fileSteps[i].indexOf($scope.search) !== -1) {
-                    step = fileSteps[i];
+            view.name = file.segments[depth];
+            view.path = file.segments.slice(0, depth + 1).join('/');
+        } else {
+            for (var i = depth; i < file.segments.length; i++) {
+                if (file.segments[i].indexOf($scope.search) !== -1) {
+                    view.name = file.segments.slice(depth, i + 1).join('/');
+                    view.path = file.segments.slice(0, i + 1).join('/');
                     break;
                 }
             }
-            if (step == null) {
-                if (fileSteps[fileSteps.length - 1].path.indexOf($scope.search) !== -1) {
-                    step = fileSteps[fileSteps.length - 1];
-                }
+        }
+        if (view.name) {
+            if (depth === file.segments.length - 1) {
+                file.name = view.name;
+                view = file;
             }
-        }
-        return step;
-    }
-
-    function inPwdSteps(steps){
-        var depth = getPwdDepth();
-        if(depth == 0){
-            return steps;
-        }
-        if(steps.length > depth && steps[depth-1] == $scope.pwd){
-            var pwdSteps = steps.slice(depth);
-            var removeSteps = [];
-            pwdSteps.forEach(step =>{
-                if(isFile(step)){
-                    step.path = step.path.substring($scope.pwd.length+1);
-                }else {
-                    step = step.substring($scope.pwd.length+1);
-                }
-               removeSteps.push(step);
-            });
-            return removeSteps;
+            return view;
         }
         return null;
     }
-    function getPwdDepth() {
-        var segments = $scope.pwd.split('/');
-        var depth = 0;
-        segments.forEach(step=> {
-            depth += step ? 1 : 0;
-        });
-        return depth;
+
+    function isInPwd(file) {
+        var depth = getPwdDepth();
+        return compareArray($scope.pwdSegments, file.segments, depth);
     }
 
-    function isFile(name){
-        return !!name.path;
-    }
-
-    function startsWith(str,prefix){
-        if(str && (str.indexOf(prefix) === 0)){
-            return true;
+    /**
+     * compare two arrays ,before depth should equal
+     * @param a1
+     * @param a2
+     * @param depth
+     */
+    function compareArray(a1, a2, depth) {
+        if (!depth) {
+            depth = 0;
         }
-        return false;
-    }
-    function removeFirstSlash(name){
-        return startsWith(name,'/') ? name.substring(1) : name;
+        if (!a1 || !a2 || a1.length < depth || a2.length < depth) {
+            return false;
+        }
+        for (var i = 0; i < depth; i++) {
+            if (a1[i] !== a2[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    $scope.changePwd = function (folder) {
-        $scope.pwd = $scope.pwd + folder;
+    function getPwdDepth() {
+        return $scope.pwdSegments.length;
+    }
+
+    function isFile(name) {
+        return !!name.size;
+    }
+
+
+    function changePwd(path) {
+        if(!path){
+            $scope.pwdSegments = [];
+        }else {
+            $scope.pwdSegments = path.split('/');
+        }
         searchFile();
-    };
+    }
 
+    function changePwdUseSegments(index) {
+        changePwd($scope.pwdSegments.slice(0, index + 1).join('/'));
+    }
+
+    $scope.changePwdUseSegments = changePwdUseSegments;
+    $scope.changePwd = changePwd;
     $scope.isFile = isFile;
-    $scope.removeFirstSlash = removeFirstSlash;
 });

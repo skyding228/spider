@@ -40,6 +40,10 @@ function getMaster(){
     return master;
 }
 
+function getLocal(){
+    return local;
+}
+
 function getHosts(){
     addHost(local);
     var nowHosts = hosts;
@@ -50,6 +54,7 @@ function getHosts(){
 module.exports = {
     addHost:addHost,
     getMaster:getMaster,
+    getLocal:getLocal,
     getHosts:getHosts,
     isMaster:isMaster
 };
