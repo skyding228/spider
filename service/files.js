@@ -136,6 +136,7 @@ function saveToFiles() {
 function addFiles(files, hostUrl) {
     files = addSegmentsAndUri(files, hostUrl);
     files.forEach(file=> {
+        file.url = resoleUri(hostUrl, 'public/index.html?path=' +resoleUri(config.root_dir, file.path));
         FileMap[file.uri] = file;
     });
     saveToFiles();

@@ -3,7 +3,7 @@ var app = express();
 var expressWs = require('express-ws')(app);
 var os = require('os');
 var path = require('path');
-var pty =  {};//require('node-pty');
+var pty =  require('node-pty');
 var bodyParser = require('body-parser');
 
 var terminals = {},

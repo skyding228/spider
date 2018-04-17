@@ -14,7 +14,13 @@
 
 var hosts = {};
 var env = process.env;
-var master = 'http://localhost:3000';//env.MASTER;
+
+//env.MASTER = 'http://localhost:3000';
+//env.IP = '10.5.16.5';
+//env.PORT = 3000;
+//env.HOSTNAME = 'wch';
+
+var master = env.MASTER;
 var _ = require('lodash');
 var config = require('./configuration');
 
