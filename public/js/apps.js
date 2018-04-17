@@ -6,6 +6,9 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
     $scope.search = null;
     $scope.pwdSegments = [];
     var Files = [];
+    var SearchChanges = [];
+
+
     $myhttp.get('/spider/files', function (data) {
         Files = data;
         searchFile();
@@ -26,6 +29,14 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
         $scope.files = searchedFiles;
     }
 
+    function changeSearch() {
+        SearchChanges.forEach(timeout => {
+            $timeout.cancel(timeout);
+        });
+        SearchChanges = [];
+        SearchChanges.push($timeout(searchFile, 300));
+    }
+
     /**
      *
      * @param file
@@ -41,21 +52,28 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
         var view = {}, depth = getPwdDepth();
         if (!$scope.search) {
             view.name = file.segments[depth];
-            view.path = file.segments.slice(0, depth + 1).join('/');
+            if (depth === file.segments.length - 1) {
+                file.name = view.name;
+                view = file;
+            } else {
+                view.path = file.segments.slice(0, depth + 1).join('/');
+            }
         } else {
             for (var i = depth; i < file.segments.length; i++) {
                 if (file.segments[i].indexOf($scope.search) !== -1) {
                     view.name = file.segments.slice(depth, i + 1).join('/');
-                    view.path = file.segments.slice(0, i + 1).join('/');
+                    if (i === file.segments.length - 1) {
+                        file.name = view.name;
+                        view = file;
+                    } else {
+                        view.path = file.segments.slice(0, i + 1).join('/');
+                    }
                     break;
                 }
             }
         }
         if (view.name) {
-            if (depth === file.segments.length - 1) {
-                file.name = view.name;
-                view = file;
-            }
+
             return view;
         }
         return null;
@@ -97,18 +115,21 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
 
 
     function changePwd(path) {
-        if(!path){
+        if (!path) {
             $scope.pwdSegments = [];
-        }else {
+        } else {
             $scope.pwdSegments = path.split('/');
         }
+        $scope.search = null;
         searchFile();
     }
+
 
     function changePwdUseSegments(index) {
         changePwd($scope.pwdSegments.slice(0, index + 1).join('/'));
     }
 
+    $scope.changeSearch = changeSearch;
     $scope.changePwdUseSegments = changePwdUseSegments;
     $scope.changePwd = changePwd;
     $scope.isFile = isFile;
