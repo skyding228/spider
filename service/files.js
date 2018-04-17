@@ -33,6 +33,21 @@ var Files = [];
  */
 var FileMap = {};
 
+
+var SizeUnit = [' B', ' K', ' M', ' G', ' T'];
+function formatFileSize(size) {
+    if(size <= 0){
+        return '0 B';
+    }
+    for (var i = 0; i < SizeUnit.length; i++) {
+        if (size > 1000) {
+            size = size / 1000;
+        } else {
+            break;
+        }
+    }
+    return Math.ceil(size) + SizeUnit[i];
+}
 /**
  * list all files recursively(exclude folder) to filesList
  * @param path
@@ -48,7 +63,7 @@ function listFilesRecursively(path, filesList) {
         } else {
             //创建一个对象保存信息
             var obj = {};
-            obj.size = states.size;//文件大小，以字节为单位
+            obj.size = formatFileSize(states.size);//文件大小，以字节为单位
             obj.shortName = file; //文件名
             obj.path = path + '/' + file; //文件绝对路径
             filesList.push(obj);
@@ -67,7 +82,7 @@ function addSegmentsAndUri(files, hostUrl) {
             file.path = file.path.substring(config.root_dir.length + 1);
         }
         file.segments = trimSlash(file.path).split('/');
-        file.uri = resoleUri(hostUrl , file.path);
+        file.uri = resoleUri(hostUrl, file.path);
     });
     return files;
 }
@@ -132,6 +147,7 @@ function getFiles() {
     }
     return Files;
 }
+
 // init to add local files
 addFiles(getLocalFiles(), hosts.getLocal().url);
 module.exports = {
