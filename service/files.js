@@ -176,7 +176,7 @@ function sendFiles() {
     }
     setTimeout(sendFiles, config.send_interval_ms);
 }
-setTimeout(sendFiles, config.send_interval_ms);
+hosts.isMaster() || setTimeout(sendFiles, config.send_interval_ms);
 
 module.exports = {
     addFiles: addFiles,
