@@ -18,6 +18,7 @@ var _ = require('lodash');
 var hosts = require('./hosts');
 var START_COLLECTION_TIME = new Date().getTime();
 var request = require('request');
+var console = require('./console');
 /**
  *
  * [{file}]

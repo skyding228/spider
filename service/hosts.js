@@ -14,6 +14,7 @@
 
 var hosts = {};
 var env = process.env;
+var console = require('./console');
 
 //env.MASTER = 'http://localhost:3000';
 //env.IP = '10.5.16.5';
