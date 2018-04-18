@@ -3,7 +3,7 @@ var router = express.Router();
 
 var files = require('../service/files');
 var hosts = require('../service/hosts');
-
+var console = require('../service/console');
 /* GET home page. */
 router.get('/files', function (req, res, next) {
     res.json(files.getFiles());
