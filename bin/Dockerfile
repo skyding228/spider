@@ -9,4 +9,5 @@ RUN apt-get install lrzsz
 RUN rm -f ~/.bashrc
 RUN mv /opt/spider/bin/bashrc ~/.bashrc
 RUN rm -rf /opt/yarn-v1.5.1
+RUN chmod +x /opt/spider/run.sh
 CMD ["/opt/spider/run.sh"]
