@@ -1,9 +1,8 @@
 FROM node:8
 MAINTAINER ShangHai skyding <1329555958@qq.com>
 
-WORKDIR /opt
-RUN cd /opt
-RUN git clone https://github.com/1329555958/spider.git
+WORKDIR /opt/logs
+RUN cd /opt && git clone https://github.com/1329555958/spider.git
 RUN cd /opt/spider && npm install
 RUN apt-get update
 RUN apt-get install lrzsz
