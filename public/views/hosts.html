@@ -5,8 +5,9 @@
             <div class="box  box-primary">
                 <div class="box-body no-padding">
                     <ul class="nav nav-stacked">
-                        <li ng-repeat="host in hosts"><a href="{{host.url}}">{{host.name}} <span
-                                ng-show="{{host.master}}" class="pull-right badge bg-blue">主节点</span></a></li>
+                        <li ng-repeat="host in hosts">
+                            <a target="_blank" href="{{host.url + (host.master ? '' : '/spiderweb-node')}}">{{host.name}}
+                                <span ng-show="{{host.master}}" class="badge pull-right bg-blue">主节点</span></a></li>
                     </ul>
                 </div>
             </div>
