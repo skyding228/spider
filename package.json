@@ -24,6 +24,6 @@
     "request": "2.85.0",
     "serve-favicon": "2.3.0",
     "xterm": "3.3.0",
-    "zmodem.js": "0.1.7"
+    "zmodem.js": "0.1.5"
   }
 }
