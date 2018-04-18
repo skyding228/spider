@@ -13,7 +13,7 @@
  */
 
 var config = {
-    root_dir: 'E:/nodejs/spider/public',
+    root_dir: '/opt/logs',
     //the period of collect all hosts files,only used in master node
     collect_interval_ms: 20 * 1000,
     //the period of send files to master, only used in agent node
