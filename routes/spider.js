@@ -21,7 +21,7 @@ router.post('/collect', function (req, res, next) {
     res.json(hosts.getHosts());
 });
 
-app.get('/download/:id',function(req,res){
+router.get('/download/:id',function(req,res){
     console.log('download + '+req.params.id);
     res.download(files.resoleUri(config.root_dir, req.params.id));
 });
