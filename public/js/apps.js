@@ -10,7 +10,8 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
 
     function loadFiles(){
         $myhttp.get('/spider/files', function (data) {
-            Files = sortFiles(data);
+            Files = data;
+            sortFiles(Files);
             searchFile();
         });
         setTimeout(loadFiles,30000);
