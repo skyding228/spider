@@ -158,7 +158,7 @@ function sendFiles() {
         var files = getLocalFiles();
         var host = hosts.getLocal();
         var master = resoleUri(hosts.getMaster(), 'spider/collect');
-        console.log('send files to ' + master, files);
+        console.log('send files to ' + master, files.length);
         request({
             uri: master,
             method: 'POST',
