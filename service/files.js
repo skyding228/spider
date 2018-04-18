@@ -84,8 +84,8 @@ function addSegmentsAndHost(files, host) {
         }
         file.segments = trimSlash(file.path).split('/');
         file.uri = resoleUri(host.url, file.path);
-        file.tailUrl = resoleUri(host.url, 'public/index.html?path=' +resoleUri(config.root_dir, file.path));
-        file.downLoadUrl = resoleUri(host.url,file.path);
+        file.tailUrl = resoleUri(host.url, 'public/index.html?path=' + resoleUri(config.root_dir, file.path));
+        file.downloadUrl = resoleUri(host.url, 'spider/download?path=' + resoleUri(config.root_dir, file.path));
         file.host = host.name;
     });
     return files;
@@ -179,12 +179,12 @@ function sendFiles() {
     }
 }
 
-function cronJob(){
-    if(!hosts.isMaster()){
+function cronJob() {
+    if (!hosts.isMaster()) {
         sendFiles();
     }
     // every node can serve their local files
-    addFiles(getLocalFiles(),hosts.getLocal());
+    addFiles(getLocalFiles(), hosts.getLocal());
     setTimeout(cronJob, config.send_interval_ms);
 }
 //start cron job
@@ -193,6 +193,5 @@ setTimeout(cronJob, 100);
 module.exports = {
     addFiles: addFiles,
     getFiles: getFiles,
-    getLocalFiles: getLocalFiles,
-    resoleUri:resoleUri
+    getLocalFiles: getLocalFiles
 };
