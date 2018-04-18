@@ -15,13 +15,13 @@ router.get('/hosts', function (req, res, next) {
 });
 
 router.post('/collect', function (req, res, next) {
-    console.log('receive files from ' + req.body.host);
+    console.log('receive files from ',req.body.host);
     hosts.addHost(req.body.host);
     files.addFiles(req.body.files,req.body.host);
     res.json(hosts.getHosts());
 });
 
-router.get('/download/:id',function(req,res){
+router.get('/download/:id(.+)',function(req,res){
     console.log('download + '+req.params.id);
     res.download(files.resoleUri(config.root_dir, req.params.id));
 });

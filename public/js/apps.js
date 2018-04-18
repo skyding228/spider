@@ -11,7 +11,7 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
     function loadFiles(){
         $myhttp.get('/spider/files', function (data) {
             Files = data;
-            sortFiles(Files);
+            //sortFiles(Files);
             searchFile();
         });
         setTimeout(loadFiles,30000);

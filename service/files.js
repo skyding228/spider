@@ -85,7 +85,7 @@ function addSegmentsAndHost(files, host) {
         file.segments = trimSlash(file.path).split('/');
         file.uri = resoleUri(host.url, file.path);
         file.tailUrl = resoleUri(host.url, 'public/index.html?path=' +resoleUri(config.root_dir, file.path));
-        file.downLoadUrl = resoleUri(host.url,'')
+        file.downLoadUrl = resoleUri(host.url,file.path);
         file.host = host.name;
     });
     return files;
