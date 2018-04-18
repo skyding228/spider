@@ -10,12 +10,25 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
 
     function loadFiles(){
         $myhttp.get('/spider/files', function (data) {
-            Files = data;
+            Files = sortFiles(data);
             searchFile();
         });
         setTimeout(loadFiles,30000);
     }
     loadFiles();
+    function sortFiles(data){
+        if(data){
+            data.sort(function(a,b){
+                var result = 0;
+                if(a.path > b.path){
+                    result = 1;
+                }else if(a.path < b.path){
+                    result = -1;
+                }
+                return result;
+            });
+        }
+    }
 
     function searchFile() {
         var fileMap = {};
