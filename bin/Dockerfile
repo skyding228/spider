@@ -9,7 +9,7 @@ RUN npm install
 RUN apt-get update
 RUN apt-get install lrzsz
 RUN rm -f ~/.bashrc
-RUN mv /opt/spider/bashrc ~/.bashrc
+RUN mv /opt/spider/bin/bashrc ~/.bashrc
 RUN source ~/.bashrc
 
 CMD ["/opt/spider/run.sh"]
