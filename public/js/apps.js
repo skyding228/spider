@@ -8,11 +8,14 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
     var Files = [];
     var SearchChanges = [];
 
-
-    $myhttp.get('/spider/files', function (data) {
-        Files = data;
-        searchFile();
-    });
+    function loadFiles(){
+        $myhttp.get('/spider/files', function (data) {
+            Files = data;
+            searchFile();
+        });
+        setTimeout(loadFiles,30000);
+    }
+    loadFiles();
 
     function searchFile() {
         var fileMap = {};

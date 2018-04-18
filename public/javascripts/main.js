@@ -324,6 +324,8 @@ function changeToDir() {
         });
         dir && term.send('cd ' + dir + ' \n');
         file && term.send('tail -f ' + file + ' \n');
+    }else{
+        term.send('cd /opt/logs \n');
     }
 
 }

@@ -76,14 +76,17 @@ function listFilesRecursively(path, filesList) {
 /**
  * segment is one folder in path,e.g. opt is one segment of /opt/logs
  */
-function addSegmentsAndUri(files, hostUrl) {
+function addSegmentsAndHost(files, host) {
     _.forEach(files, file => {
         //remove root dir
         if (file.path.startsWith(config.root_dir)) {
             file.path = file.path.substring(config.root_dir.length + 1);
         }
         file.segments = trimSlash(file.path).split('/');
-        file.uri = resoleUri(hostUrl, file.path);
+        file.uri = resoleUri(host.url, file.path);
+        file.tailUrl = resoleUri(host.url, 'public/index.html?path=' +resoleUri(config.root_dir, file.path));
+        file.downLoadUrl = resoleUri(host.url,'')
+        file.host = host.name;
     });
     return files;
 }
@@ -134,10 +137,9 @@ function saveToFiles() {
     }
 }
 
-function addFiles(files, hostUrl) {
-    files = addSegmentsAndUri(files, hostUrl);
+function addFiles(files, host) {
+    files = addSegmentsAndHost(files, host);
     files.forEach(file=> {
-        file.url = resoleUri(hostUrl, 'public/index.html?path=' +resoleUri(config.root_dir, file.path));
         FileMap[file.uri] = file;
     });
     saveToFiles();
@@ -182,7 +184,7 @@ function cronJob(){
         sendFiles();
     }
     // every node can serve their local files
-    addFiles(getLocalFiles(),hosts.getLocal().url);
+    addFiles(getLocalFiles(),hosts.getLocal());
     setTimeout(cronJob, config.send_interval_ms);
 }
 //start cron job
@@ -191,5 +193,6 @@ setTimeout(cronJob, 100);
 module.exports = {
     addFiles: addFiles,
     getFiles: getFiles,
-    getLocalFiles: getLocalFiles
+    getLocalFiles: getLocalFiles,
+    resoleUri:resoleUri
 };

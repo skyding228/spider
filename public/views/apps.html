@@ -25,16 +25,20 @@
                         <tbody>
                         <tr>
                             <th style="width: 50px;">No.</th>
+                            <th style="width: 80px;">Size</th>
                             <th>Name</th>
-                            <th>Size</th>
+                            <th style="width: 100px;">Host</th>
+                            <th style="width: 60px;">Download</th>
                         </tr>
                         <tr ng-repeat="file in files">
                             <td>{{$index + 1}}</td>
+                            <td>{{file.size || '-'}}</td>
                             <td>
-                                <a ng-if="isFile(file)" target="_blank" ng-href="{{file.url}}"><i class="fa fa-file-text-o"></i>&nbsp;{{file.name}}</a>
+                                <a ng-if="isFile(file)" target="_blank" ng-href="{{file.tailUrl}}"><i class="fa fa-file-text-o"></i>&nbsp;{{file.name}}</a>
                                 <a ng-if="!isFile(file)" ng-click="changePwd(file.path);"><i class="fa fa-folder"></i>&nbsp;{{file.name}}</a>
                             </td>
-                            <td>{{file.size || '-'}}</td>
+                            <td>{{file.host || ''}}</td>
+                            <td><a ng-if="isFile(file)" href="{{file.downLoadUrl}}"><i class="fa fa-download"></i></a></td>
                         </tr>
                         </tbody>
                     </table>
