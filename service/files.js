@@ -153,30 +153,41 @@ function getFiles() {
     return Files;
 }
 
+var BATCH = 200; //batch size to send files,too large maybe has a error
 function sendFiles() {
     try {
         var files = getLocalFiles();
         var host = hosts.getLocal();
         var master = resoleUri(hosts.getMaster(), 'spider/collect');
-        console.log('send files to ' + master, files.length);
-        request({
-            uri: master,
-            method: 'POST',
-            json: {host: _.pick(host, 'url', 'name'), files: files}
-        }, function (err, resp, body) {
-            if (err) {
-                console.log('send to ' + master + ' err!', err);
-            } else {
-                try {
-                    hosts.addHosts(body);
-                } catch (e) {
-                    console.log('add hosts has a err!', e, body);
-                }
-            }
-        });
+        while(files.length > BATCH){
+            var toSend = files.splice(0,BATCH);
+            send(toSend,host,master);
+        }
+        if(files.length){
+            send(files,host,master);
+        }
+
     } catch (e) {
         console.log('send file has a err!', e);
     }
+}
+function send(files,host,master){
+    console.log('send files to ' + master, files.length);
+    request({
+        uri: master,
+        method: 'POST',
+        json: {host: _.pick(host, 'url', 'name'), files: files}
+    }, function (err, resp, body) {
+        if (err) {
+            console.log('send to ' + master + ' err!', err);
+        } else {
+            try {
+                hosts.addHosts(body);
+            } catch (e) {
+                console.log('add hosts has a err!', e, body);
+            }
+        }
+    });
 }
 
 function cronJob() {
