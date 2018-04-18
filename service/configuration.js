@@ -15,9 +15,9 @@
 var config = {
     root_dir: '/opt/logs',
     //the period of collect all hosts files,only used in master node
-    collect_interval_ms: 20 * 1000,
+    collect_interval_ms: 30 * 1000,
     //the period of send files to master, only used in agent node
-    send_interval_ms: 5 * 1000
+    send_interval_ms: 10 * 1000
 };
 
 

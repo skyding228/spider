@@ -174,9 +174,18 @@ function sendFiles() {
     } catch (e) {
         console.log('send file has a err!', e);
     }
-    setTimeout(sendFiles, config.send_interval_ms);
 }
-hosts.isMaster() || setTimeout(sendFiles, config.send_interval_ms);
+
+function cronJob(){
+    if(!hosts.isMaster()){
+        sendFiles();
+    }
+    // every node can serve their local files
+    addFiles(getLocalFiles(),hosts.getLocal().url);
+    setTimeout(cronJob, config.send_interval_ms);
+}
+//start cron job
+setTimeout(cronJob, 100);
 
 module.exports = {
     addFiles: addFiles,
