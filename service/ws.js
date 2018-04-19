@@ -40,6 +40,9 @@ function getAliveSockets() {
 }
 
 function sendFilesToAllWS(files){
+    if(!files.length){
+        return;
+    }
     setTimeout(function () {
         getAliveSockets().forEach(ws=> {
             sendFiles(ws, files);

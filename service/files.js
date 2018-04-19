@@ -171,8 +171,10 @@ function addFiles(files, host) {
         FileMap[file.uri] = file;
     });
     saveToFiles();
-    sendFiles(newFiles);
-    WS.sendFilesToAllWS(newFiles);
+    if (newFiles.length) {
+        sendFiles(newFiles);
+        WS.sendFilesToAllWS(newFiles);
+    }
 }
 
 
@@ -251,6 +253,9 @@ function sendNewFilesCronJob() {
         var path = PATH.resolve(config.root_dir, name);
         var segments = name.split(PATH.sep);
         var stat = fs.statSync(path);
+        if (stat.isDirectory()) {
+            return;
+        }
         var file = {};
         file.shortName = segments[segments.length - 1];
         file.size = formatFileSize(stat.size);
@@ -261,8 +266,8 @@ function sendNewFilesCronJob() {
 }
 watchNewFiles();
 //start cron job
-setTimeout(sendAllFilesCronJob, 100);
-setTimeout(sendNewFilesCronJob, 100);
+setTimeout(sendAllFilesCronJob, 1000);
+setTimeout(sendNewFilesCronJob, 1000);
 module.exports = {
     addFiles: addFiles,
     getFiles: getFiles,
