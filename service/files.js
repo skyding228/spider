@@ -19,6 +19,19 @@ var hosts = require('./hosts');
 var START_COLLECTION_TIME = new Date().getTime();
 var request = require('request');
 var console = require('./console');
+
+/**
+ * {
+ *  size
+    shortName
+    path
+    segments
+    uri
+    tailUrl
+    downloadUrl
+    host
+ * }
+ */
 /**
  *
  * [{file}]

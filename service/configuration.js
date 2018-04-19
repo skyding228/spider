@@ -13,13 +13,13 @@
  */
 
 var config = {
-    root_dir: '/opt/logs',
+    root_dir: '/nodejs/spider',
     //the period of collect all hosts files,only used in master node
-    collect_interval_ms: 30 * 1000,
+    collect_interval_ms: 180 * 1000,
     //the period of send files to master, only used in agent node
-    send_interval_ms: 10 * 1000,
+    send_interval_ms: 60 * 1000,
     // send too many files to make a error, so if too many files ,need to  send in batches
-    files_batch_size: 300
+    files_batch_size: 500
 };
 
 

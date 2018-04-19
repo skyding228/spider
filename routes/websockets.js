@@ -33,7 +33,14 @@ router.get('/new', function getNewSocket(req, res, next) {
 router.ws('/files/:id', function filesSocket(ws, req) {
     ws.on('message', function (msg) {
         console.log('receive ' + msg + ' from web socket ' + req.params.id);
-        sendFiles(ws);
+        var files = Files.getFiles();
+        while (files.length > BATCH) {
+            var toSend = files.splice(0, BATCH);
+            sendFiles(ws,toSend);
+        }
+        if (files.length) {
+            sendFiles(ws,files);
+        }
     });
     ws.on('close', function (msg) {
         console.log('close web socket ' + req.params.id);
@@ -41,15 +48,10 @@ router.ws('/files/:id', function filesSocket(ws, req) {
     });
 });
 
-function sendFiles(ws) {
-    var files = Files.getFiles();
-    while (files.length > BATCH) {
-        var toSend = files.splice(0, BATCH);
-        ws.send(JSON.stringify(toSend));
-    }
-    if (files.length) {
-        ws.send(JSON.stringify(files));
-    }
+function sendFiles(ws,files) {
+   setTimeout(function(){
+       ws.send(JSON.stringify(files));
+   },1);
 }
 
 module.exports = router;
