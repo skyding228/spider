@@ -66,17 +66,19 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
         if (!FileWS) {
             FileWS = new WebSocket('ws://' + window.location.host + '/ws/files/' + FileWSId);
             FileWS.onmessage = function (event) {
-                addFilesToTree(JSON.parse(event.data));
+                var files = JSON.parse(event.data);
+                console.log("receive " + files.length + " files!");
+                addFilesToTree(files);
                 $timeout(searchFile);
             };
             FileWS.onclose = function (event) {
                 FileWS = null;
                 FileWSId = null;
             };
-            FileWS.onopen = function(event){
+            FileWS.onopen = function (event) {
                 FileWS.send('hello,give me files!');
             }
-        }else{
+        } else {
             FileWS.send('hello,I need files!');
         }
 
@@ -92,13 +94,13 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
                 if (!tree[folder]) {
                     tree[folder] = {files: {}};
                 }
-                if(!tree.files){
+                if (!tree.files) {
                     tree.files = {};
                 }
                 tree.files[file.uri] = file;
                 tree = tree[folder];
             }
-            if(!tree.files){
+            if (!tree.files) {
                 tree.files = {};
             }
             tree.files[file.uri] = file;
@@ -113,10 +115,10 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
                 if (a.name.length !== b.name.length) {
                     return a.name.length - b.name.length;
                 }
-                if(isFile(a)){
+                if (isFile(a)) {
                     return 1;
                 }
-                if(isFile(b)){
+                if (isFile(b)) {
                     return -1;
                 }
                 var result = 0;

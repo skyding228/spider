@@ -19,6 +19,9 @@ var hosts = require('./hosts');
 var START_COLLECTION_TIME = new Date().getTime();
 var request = require('request');
 var console = require('./console');
+var WS = require('../service/ws');
+
+var PATH = require('path');
 
 /**
  * {
@@ -47,6 +50,9 @@ var Files = [];
  */
 var FileMap = {};
 
+var NewFiles = [];
+
+var BATCH = config.files_batch_size; //batch size to send files,too large maybe has a error
 
 var SizeUnit = [' B', ' K', ' M', ' G', ' T'];
 function formatFileSize(size) {
@@ -149,14 +155,26 @@ function saveToFiles() {
         START_COLLECTION_TIME = now;
     }
 }
-
+/**
+ * save all files ,return new add files
+ * @param files
+ * @param host
+ * @returns {Array} new files
+ */
 function addFiles(files, host) {
     files = addSegmentsAndHost(files, host);
+    var newFiles = [];
     files.forEach(file=> {
+        if (!FileMap[file.uri]) {
+            newFiles.push(file);
+        }
         FileMap[file.uri] = file;
     });
     saveToFiles();
+    sendFiles(newFiles);
+    WS.sendFilesToAllWS(newFiles);
 }
+
 
 function getFiles() {
     //if no files , use collecting files
@@ -166,54 +184,85 @@ function getFiles() {
     return [].concat(Files);
 }
 
-var BATCH = config.files_batch_size; //batch size to send files,too large maybe has a error
-function sendFiles() {
-    try {
-        var files = getLocalFiles();
-        var host = hosts.getLocal();
-        var master = resoleUri(hosts.getMaster(), 'spider/collect');
-        while(files.length > BATCH){
-            var toSend = files.splice(0,BATCH);
-            send(toSend,host,master);
-        }
-        if(files.length){
-            send(files,host,master);
-        }
-
-    } catch (e) {
-        console.log('send file has a err!', e);
-    }
-}
-function send(files,host,master){
-    console.log('send files to ' + master, files.length);
-    request({
-        uri: master,
-        method: 'POST',
-        json: {host: _.pick(host, 'url', 'name'), files: files}
-    }, function (err, resp, body) {
-        if (err) {
-            console.log('send to ' + master + ' err!', err);
-        } else {
-            try {
-                hosts.addHosts(body);
-            } catch (e) {
-                console.log('add hosts has a err!', e, body);
-            }
+function watchNewFiles() {
+    fs.watch(config.root_dir, {recursive: true}, function (event, filename) {
+        if ('rename' === event) {
+            NewFiles.push(filename);
         }
     });
 }
 
-function cronJob() {
-    if (!hosts.isMaster()) {
-        sendFiles();
+function sendFiles(files) {
+    if (hosts.isMaster()) {
+        return;
     }
+    var host = hosts.getLocal();
+    var master = resoleUri(hosts.getMaster(), 'spider/collect');
+    try {
+        while (files.length > BATCH) {
+            var toSend = files.splice(0, BATCH);
+            send(toSend, host, master);
+        }
+        if (files.length) {
+            send(files, host, master);
+        }
+
+    } catch (e) {
+        console.log('send files to ' + master + ' has a err!', e);
+    }
+}
+function send(files, host, master) {
+    setTimeout(function () {
+        console.log('send files to ' + master, files.length);
+        request({
+            uri: master,
+            method: 'POST',
+            json: {host: _.pick(host, 'url', 'name'), files: files}
+        }, function (err, resp, body) {
+            if (err) {
+                console.log('send to ' + master + ' err!', err);
+            } else {
+                try {
+                    hosts.addHosts(body);
+                } catch (e) {
+                    console.log('add hosts has a err!', e, body);
+                }
+            }
+        });
+    }, 1);
+}
+
+function sendAllFilesCronJob() {
+    setTimeout(sendAllFilesCronJob, config.send_interval_ms);
+    sendFiles(getLocalFiles());
     // every node can serve their local files
     addFiles(getLocalFiles(), hosts.getLocal());
-    setTimeout(cronJob, config.send_interval_ms);
 }
-//start cron job
-setTimeout(cronJob, 100);
 
+function sendNewFilesCronJob() {
+    setTimeout(sendNewFilesCronJob, config.send_new_files_ms);
+    if (!NewFiles.length) {
+        return;
+    }
+    var fileNames = NewFiles;
+    NewFiles = [];
+    var files = [];
+    fileNames.forEach(name=> {
+        var path = PATH.resolve(config.root_dir, name);
+        var segments = name.split(PATH.sep);
+        var stat = fs.statSync(path);
+        var file = {};
+        file.shortName = segments[segments.length - 1];
+        file.size = formatFileSize(stat.size);
+        file.path = resoleUri(config.root_dir, segments.join('/'));
+        files.push(file);
+    });
+    addFiles(files, hosts.getLocal());
+}
+watchNewFiles();
+//start cron job
+setTimeout(sendAllFilesCronJob, 100);
+setTimeout(sendNewFilesCronJob, 100);
 module.exports = {
     addFiles: addFiles,
     getFiles: getFiles,

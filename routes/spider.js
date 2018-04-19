@@ -15,13 +15,13 @@ router.get('/hosts', function (req, res, next) {
 });
 
 router.post('/collect', function (req, res, next) {
-    console.log('receive files from ',req.body.host);
     hosts.addHost(req.body.host);
-    files.addFiles(req.body.files,req.body.host);
+    files.addFiles(req.body.files, req.body.host);
+    console.log('receive ' + req.body.files.length + 'files from ', req.body.host, newFiles.length + ' is new files');
     res.json(hosts.getHosts());
 });
 
-router.get('/download',function(req,res){
+router.get('/download', function (req, res) {
     console.log('download ' + req.query.path);
     res.download(req.query.path);
 });

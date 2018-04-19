@@ -14,44 +14,36 @@
 var Files = require('../service/files');
 var console = require('../service/console');
 var config = require('../service/configuration');
+var WS = require('../service/ws');
 
 var express = require('express');
 var router = express.Router();
 
-var WebSockets = {};
-var NextSocketId = 1;
 var BATCH = config.files_batch_size;
 
-
 router.get('/new', function getNewSocket(req, res, next) {
-    var id = NextSocketId++;
-    WebSockets[id] = 1; //only represent the socket is alive
-    console.log('new websocket '+id);
+    var id = WS.getNewSocketId();
+    console.log('new websocket ' + id);
     res.json(id);
 });
 
 router.ws('/files/:id', function filesSocket(ws, req) {
     ws.on('message', function (msg) {
+        WS.saveWebSocket(req.params.id, ws);
         console.log('receive ' + msg + ' from web socket ' + req.params.id);
         var files = Files.getFiles();
         while (files.length > BATCH) {
             var toSend = files.splice(0, BATCH);
-            sendFiles(ws,toSend);
+            WS.sendFiles(ws, toSend);
         }
         if (files.length) {
-            sendFiles(ws,files);
+            WS.sendFiles(ws, files);
         }
     });
     ws.on('close', function (msg) {
         console.log('close web socket ' + req.params.id);
-        delete  WebSockets[req.params.id];
+        WS.removeSocket(req.params.id);
     });
 });
-
-function sendFiles(ws,files) {
-   setTimeout(function(){
-       ws.send(JSON.stringify(files));
-   },1);
-}
 
 module.exports = router;
