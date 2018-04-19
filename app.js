@@ -22,6 +22,9 @@ app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 var spider = require('./routes/spider');
 app.use('/spider', spider);
 
+var websockets = require('./routes/websockets');
+app.use('/ws',websockets);
+
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/public/views/home.html');
 });
@@ -86,6 +89,7 @@ app.ws('/terminals/:pid', function (ws, req) {
     });
 });
 
+app.ws('/ws/files/:pid')
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');

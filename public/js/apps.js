@@ -7,19 +7,30 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
     $scope.pwdSegments = [];
     var Files = [];
     var SearchChanges = [];
+    var supportWebSocket = !!window.WebSocket;
+    if(!supportWebSocket){
+        alert('当前不支持WebSocket,请升级浏览器,否则影响体验!',3000);
+    }
 
     function loadFiles(){
         $myhttp.get('/spider/files', function (data) {
             Files = data;
-            //sortFiles(Files);
             searchFile();
         });
         setTimeout(loadFiles,30000);
     }
     loadFiles();
+
+    function loadFilesUseWs(){
+
+    }
+
     function sortFiles(data){
         if(data){
             data.sort(function(a,b){
+                if(a.name.length !== b.name.length){
+                    return a.name.length - b.name.length;
+                }
                 var result = 0;
                 if(a.path > b.path){
                     result = 1;
@@ -29,6 +40,7 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
                 return result;
             });
         }
+        return data;
     }
 
     function searchFile() {
@@ -43,7 +55,7 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
         for (var k in fileMap) {
             searchedFiles.push(fileMap[k]);
         }
-        $scope.files = searchedFiles;
+        $scope.files = sortFiles(searchedFiles);
     }
 
     function changeSearch() {
@@ -145,6 +157,9 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
     function changePwdUseSegments(index) {
         changePwd($scope.pwdSegments.slice(0, index + 1).join('/'));
     }
+
+    //---------------------------websocket---------
+
 
     $scope.changeSearch = changeSearch;
     $scope.changePwdUseSegments = changePwdUseSegments;

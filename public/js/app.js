@@ -160,6 +160,7 @@ define('app', [ 'base'], function () {
 define('init', ['app'], function (app) {
 
     app.controller('rootController', function ($rootScope, $timeout) {
+        $rootScope.showNotSupportWebSocket = !window.WebSocket;
         var condition = {}; //保存当前条件信息
         $rootScope.menuClass = function(menu){
             return window.location.hash.indexOf(menu) === 0 ? 'select' : '';

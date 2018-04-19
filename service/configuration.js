@@ -17,7 +17,9 @@ var config = {
     //the period of collect all hosts files,only used in master node
     collect_interval_ms: 30 * 1000,
     //the period of send files to master, only used in agent node
-    send_interval_ms: 10 * 1000
+    send_interval_ms: 10 * 1000,
+    // send too many files to make a error, so if too many files ,need to  send in batches
+    files_batch_size: 300
 };
 
 

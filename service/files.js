@@ -150,10 +150,10 @@ function getFiles() {
     if (!Files.length) {
         return _.valuesIn(FileMap);
     }
-    return Files;
+    return [].concat(Files);
 }
 
-var BATCH = 200; //batch size to send files,too large maybe has a error
+var BATCH = config.files_batch_size; //batch size to send files,too large maybe has a error
 function sendFiles() {
     try {
         var files = getLocalFiles();
