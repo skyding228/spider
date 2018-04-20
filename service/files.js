@@ -162,6 +162,7 @@ function addFiles(files, host) {
         sendFiles(newFiles);
         WS.sendFilesToAllWS(newFiles);
     }
+    return newFiles;
 }
 
 
