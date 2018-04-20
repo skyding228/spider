@@ -42,7 +42,7 @@ function isMaster() {
 }
 
 function addHost(host) {
-    host.update_at = new Date().getTime();
+    host.updateAt = new Date().getTime();
     hosts[host.url] = host;
 }
 
@@ -65,7 +65,7 @@ function getHosts() {
     var now = new Date().getTime();
     for (var k in hosts) {
         var host = hosts[k];
-        if (now - host.update_at > config.collect_interval_ms) {
+        if (now - host.updateAt > config.collect_interval_ms) {
             delete hosts[k];
         }
     }

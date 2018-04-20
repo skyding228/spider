@@ -14,10 +14,23 @@
 var _ = require('lodash');
 
 var WebSockets = {};
-var NextSocketId = 1;
+var NextSocketId = new Date().getTime();
+var config = require('./configuration');
 
+var BATCH = config.files_batch_size; //batch size to send files,too large maybe has a error
 
 function sendFiles(ws, files) {
+    while (files.length > BATCH) {
+        var toSend = files.splice(0, BATCH);
+        send(ws, toSend);
+    }
+    if (files.length) {
+        send(ws, files);
+    }
+
+}
+
+function send(ws, files) {
     setTimeout(function () {
         ws.send(JSON.stringify(files));
     }, 1);
@@ -39,15 +52,13 @@ function getAliveSockets() {
     return _.valuesIn(WebSockets);
 }
 
-function sendFilesToAllWS(files){
-    if(!files.length){
+function sendFilesToAllWS(files) {
+    if (!files.length) {
         return;
     }
-    setTimeout(function () {
-        getAliveSockets().forEach(ws=> {
-            sendFiles(ws, files);
-        })
-    }, 1);
+    getAliveSockets().forEach(ws=> {
+        sendFiles(ws, files);
+    });
 }
 
 module.exports = {
@@ -56,6 +67,6 @@ module.exports = {
     saveWebSocket: saveWebSocket,
     removeSocket: removeSocket,
     getAliveSockets: getAliveSockets,
-    sendFilesToAllWS:sendFilesToAllWS
+    sendFilesToAllWS: sendFilesToAllWS
 };
 

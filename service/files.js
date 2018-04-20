@@ -16,7 +16,6 @@ var fs = require('fs');
 var config = require('./configuration');
 var _ = require('lodash');
 var hosts = require('./hosts');
-var START_COLLECTION_TIME = new Date().getTime();
 var request = require('request');
 var console = require('./console');
 var WS = require('../service/ws');
@@ -36,12 +35,6 @@ var PATH = require('path');
  * }
  */
 /**
- *
- * [{file}]
- * @type [{}]
- */
-var Files = [];
-/**
  * uri is host + absolute path, one uri can identify one file
  * {
  *  uri:file
@@ -50,7 +43,7 @@ var Files = [];
  */
 var FileMap = {};
 
-var NewFiles = [];
+var NewFiles = {};
 
 var BATCH = config.files_batch_size; //batch size to send files,too large maybe has a error
 
@@ -77,7 +70,11 @@ function listFilesRecursively(path, filesList) {
     var files = fs.readdirSync(path);//需要用到同步读取
     files.forEach(walk);
     function walk(file) {
-        var states = fs.statSync(path + '/' + file);
+        var absolutePath = path + '/' + file;
+        if(!fs.existsSync(absolutePath)){
+            return;
+        }
+        var states = fs.statSync(absolutePath);
         if (states.isDirectory()) {
             listFilesRecursively(path + '/' + file, filesList);
         } else {
@@ -96,7 +93,9 @@ function listFilesRecursively(path, filesList) {
  * segment is one folder in path,e.g. opt is one segment of /opt/logs
  */
 function addSegmentsAndHost(files, host) {
+    var now = new Date().getTime();
     _.forEach(files, file => {
+        file.updateAt = now;
         //remove root dir
         if (file.path.startsWith(config.root_dir)) {
             file.path = file.path.substring(config.root_dir.length + 1);
@@ -143,18 +142,7 @@ function getLocalFiles() {
     listFilesRecursively(config.root_dir, fileList);
     return fileList;
 }
-/**
- * tell you where to save,Files or NextFiles
- */
-function saveToFiles() {
-    var now = new Date().getTime();
-    //files collection finished,start next one
-    if (now - START_COLLECTION_TIME > config.collect_interval_ms) {
-        Files = _.valuesIn(FileMap);
-        FileMap = {};
-        START_COLLECTION_TIME = now;
-    }
-}
+
 /**
  * save all files ,return new add files
  * @param files
@@ -170,7 +158,6 @@ function addFiles(files, host) {
         }
         FileMap[file.uri] = file;
     });
-    saveToFiles();
     if (newFiles.length) {
         sendFiles(newFiles);
         WS.sendFilesToAllWS(newFiles);
@@ -178,18 +165,28 @@ function addFiles(files, host) {
 }
 
 
-function getFiles() {
-    //if no files , use collecting files
-    if (!Files.length) {
-        return _.valuesIn(FileMap);
+function weedOverdueFiles() {
+    var now = new Date().getTime();
+    var files = [];
+    for (var k in FileMap) {
+        var file = FileMap[k];
+        if (now - config.collect_interval_ms > file.updateAt) {
+            delete FileMap[k];
+        } else {
+            files.push(file);
+        }
     }
-    return [].concat(Files);
+    return files;
+}
+
+function getFiles() {
+    return weedOverdueFiles();
 }
 
 function watchNewFiles() {
     fs.watch(config.root_dir, {recursive: true}, function (event, filename) {
         if ('rename' === event) {
-            NewFiles.push(filename);
+            NewFiles[filename] = 1; //use key of object to avoid duplicate
         }
     });
 }
@@ -243,24 +240,31 @@ function sendAllFilesCronJob() {
 
 function sendNewFilesCronJob() {
     setTimeout(sendNewFilesCronJob, config.send_new_files_ms);
-    if (!NewFiles.length) {
+    var fileNames = _.keysIn(NewFiles);
+    NewFiles = {};
+    if (!fileNames.length) {
         return;
     }
-    var fileNames = NewFiles;
-    NewFiles = [];
     var files = [];
     fileNames.forEach(name=> {
-        var path = PATH.resolve(config.root_dir, name);
-        var segments = name.split(PATH.sep);
-        var stat = fs.statSync(path);
-        if (stat.isDirectory()) {
-            return;
+        try {
+            var path = PATH.resolve(config.root_dir, name);
+            if (!fs.existsSync(path)) {
+                return;
+            }
+            var segments = name.split(PATH.sep);
+            var stat = fs.statSync(path);
+            if (stat.isDirectory()) {
+                return;
+            }
+            var file = {};
+            file.shortName = segments[segments.length - 1];
+            file.size = formatFileSize(stat.size);
+            file.path = resoleUri(config.root_dir, segments.join('/'));
+            files.push(file);
+        } catch (e) {
+            console.log(e);
         }
-        var file = {};
-        file.shortName = segments[segments.length - 1];
-        file.size = formatFileSize(stat.size);
-        file.path = resoleUri(config.root_dir, segments.join('/'));
-        files.push(file);
     });
     addFiles(files, hosts.getLocal());
 }

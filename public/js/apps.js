@@ -207,7 +207,8 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
 
     function isOverdueFile(file, now) {
         now = now || new Date().getTime();
-        return now - VALIDITY_PERIOD > file.updateAt;
+        //the 100 ms attend to avoid  network deviation
+        return now - VALIDITY_PERIOD - 100 > file.updateAt;
     }
 
     function changeSearch() {
