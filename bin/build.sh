@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t spider .
+docker build --no-cache -t spider .
