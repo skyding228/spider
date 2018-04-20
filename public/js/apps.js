@@ -72,14 +72,15 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
                 $timeout(searchFile);
             };
             FileWS.onclose = function (event) {
+                console.log('webSocket closed!');
                 FileWS = null;
                 FileWSId = null;
             };
             FileWS.onopen = function (event) {
-                FileWS.send('hello,give me files!');
+                FileWS.send('newer comes ! give me files!');
             }
         } else {
-            FileWS.send('hello,I need files!');
+            FileWS.send('hello,I need latest files!');
         }
 
     }
@@ -207,8 +208,7 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
 
     function isOverdueFile(file, now) {
         now = now || new Date().getTime();
-        //the 2000 ms attend to avoid  network deviation
-        return now - VALIDITY_PERIOD - 2000 > file.updateAt;
+        return now - VALIDITY_PERIOD > file.updateAt;
     }
 
     function changeSearch() {
