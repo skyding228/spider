@@ -26,6 +26,7 @@ var EXCLUDE_URLS ={'/spider/collect':1,'/spider/hosts':1};
 function loginFilter(req, res, next) {
     if(EXCLUDE_URLS[req.originalUrl]){
         next();
+        return;
     }
     if (hosts.isMaster()) {
         if (!verifyToken(req)) {
