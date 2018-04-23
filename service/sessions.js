@@ -31,7 +31,10 @@ function loginFilter(req, res, next) {
         return;
     }
     var loginUrl = files.resoleUri(hosts.getMaster(), 'login');
-    toVerifyTokenOnMaster(req, next, function () {
+    toVerifyTokenOnMaster(req, function(){
+        res.cookie(TOKEN,getTokenFromReq(req));
+        next();
+    }, function () {
         res.redirect(loginUrl);
     });
 }
