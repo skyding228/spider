@@ -50,7 +50,7 @@ function createTerminal() {
             rows = size.rows,
             url = '/terminals/' + pid + '/size?cols=' + cols + '&rows=' + rows;
 
-        fetch(url, {method: 'POST'});
+        fetch(url, {method: 'POST',credentials: 'include'});
     });
     protocol = (location.protocol === 'https:') ? 'wss://' : 'ws://';
     socketURL = protocol + location.hostname + ((location.port) ? (':' + location.port) : '') + '/terminals/';
@@ -66,7 +66,7 @@ function createTerminal() {
         // Set terminal size again to set the specific dimensions on the demo
         setTerminalSize();
 
-        fetch('/terminals?cols=' + term.cols + '&rows=' + term.rows, {method: 'POST'}).then(function (res) {
+        fetch('/terminals?cols=' + term.cols + '&rows=' + term.rows, {method: 'POST',credentials: 'include'}).then(function (res) {
 
             res.text().then(function (pid) {
                 window.pid = pid;
