@@ -8,7 +8,7 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
         $myhttp.get('/spider/hosts', function (data) {
             data = data || [];
             data.forEach(host=> {
-                host.url = removeLastSlash(url) + (  host.master ? '' : '/spiderweb-node?' + $rootScope.TOKEN_PARAM);
+                host.url = removeLastSlash(host.url) + (  host.master ? '' : '/spiderweb-node?' + $rootScope.TOKEN_PARAM);
             });
             $scope.hosts = data;
         });
