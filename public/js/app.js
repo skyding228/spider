@@ -24,7 +24,6 @@ var STORE = {
     }
 })();
 
-var TIMESLOT_IS_CUSTOM = false; //时间区间是否是自定义
 define('app', [ 'base'], function () {
     var app = window.APP = angular.module('app', ['ngExtend', 'ui.router']);
 

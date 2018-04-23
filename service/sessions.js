@@ -36,22 +36,35 @@ function loginFilter(req, res, next) {
     });
 }
 
+function removeToken(req) {
+    var token = getTokenFromReq(req);
+    if (token) {
+        delete SESSION[token];
+    }
+}
 
 function newToken() {
     var now = new Date().getTime();
     var token = now + (TOKEN_INDEX++);
-    SESSION[token] = now;
+    SESSION[token] = {};
     return token;
+}
+
+function getSession(token) {
+    if (!token) {
+        return null;
+    }
+    return SESSION[token];
 }
 
 function getTokenFromReq(req) {
     var token = req.query[TOKEN];
     token = token || req.cookies[TOKEN];
-    return SESSION[token];
+    return token;
 }
 
 function verifyToken(req) {
-    return !!getTokenFromReq(req);
+    return !!SESSION[getTokenFromReq(req)];
 }
 /**
  *
@@ -78,6 +91,8 @@ function toVerifyTokenOnMaster(req, yesCb, noCb) {
 module.exports = {
     loginFilter: loginFilter,
     newToken: newToken,
+    removeToken: removeToken,
     verifyToken: verifyToken,
+    getSession: getSession,
     tokenKey: TOKEN
 };

@@ -42,6 +42,11 @@ function verifyUser(name, pwd) {
     return null;
 }
 
+function getUser(name) {
+    return Users[name];
+}
+
 module.exports = {
-    verifyUser: verifyUser
+    verifyUser: verifyUser,
+    getUser: getUser
 };

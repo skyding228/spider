@@ -66,7 +66,20 @@
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
                 <li class="dropdown user user-menu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><img
-                        src="/public/imgs/user2-160x160.jpg" class="user-image" alt="User Image"> <span>{{user.loginName}}</span></a>
+                        src="/public/imgs/user2-160x160.jpg" class="user-image" alt="User Image">
+                    <span>{{user.name}}</span></a>
+                    <ul class="dropdown-menu">
+                        <li class="user-header"><img src="/public/imgs/user2-160x160.jpg" class="img-circle"
+                                                     alt="User Image">
+
+                            <p class="ng-binding">{{user.name}}</p></li>
+                        <li class="user-footer">
+                            <!--href="{{user.logout_url}}" 后端访问不了退出地址-->
+                            <div class="pull-right"><a href="/logout"
+                                                       class="btn btn-danger btn-flat"><i
+                                    class="fa fa-sign-out"></i>退出</a></div>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>

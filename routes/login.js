@@ -17,19 +17,37 @@ var router = express.Router();
 var sessions = require('../service/sessions');
 var users = require('../service/users');
 var path = require('path');
+var hosts = require('../service/hosts');
+var files = require('../service/files');
 
 router.get('/verifyToken', function (req, res) {
     res.json(sessions.verifyToken(req) ? 'yes' : 'no');
 });
 
 router.get('/login', function (req, res, next) {
+    if (!hosts.isMaster()) {
+        res.redirect(files.resoleUri(hosts.getMaster(), 'login'));
+        return;
+    }
     res.sendFile(path.resolve(__dirname, '../html/login.html'));
+});
+router.get('/logout', function (req, res, next) {
+    if (!hosts.isMaster()) {
+        res.redirect(files.resoleUri(hosts.getMaster(), 'logout'));
+        return;
+    }
+    res.clearCookie(sessions.tokenKey);
+    sessions.removeToken(req);
+    res.redirect('/login');
 });
 
 router.post('/login', function (req, res, next) {
     var error = users.verifyUser(req.body.name, req.body.pwd);
     if (!error) {
-        res.cookie(sessions.tokenKey, sessions.newToken(), {maxAge: 1000 * 60 * 60 * 24 * 365});
+        var token = sessions.newToken();
+        res.cookie(sessions.tokenKey, token, {maxAge: 1000 * 60 * 60 * 24 * 365});
+        res.cookie('user', JSON.stringify({name: req.body.name}));
+        sessions.getSession(token).userName = req.body.name;
         res.redirect('/');
     } else {
         res.redirect('/login?_error=' + error);
