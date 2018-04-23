@@ -276,5 +276,6 @@ setTimeout(sendNewFilesCronJob, 1000);
 module.exports = {
     addFiles: addFiles,
     getFiles: getFiles,
-    getLocalFiles: getLocalFiles
+    getLocalFiles: getLocalFiles,
+    resoleUri:resoleUri
 };

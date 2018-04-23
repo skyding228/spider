@@ -5,17 +5,24 @@ var os = require('os');
 var path = require('path');
 var pty = {};//require('node-pty');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var env = process.env;
+var login = require('./routes/login');
+var sessions = require('./service/sessions');
 
 var terminals = {},
     logs = {};
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(cookieParser());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
+
+app.use(login);
+app.use(sessions.loginFilter);
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/html/home.html');

@@ -13,10 +13,35 @@
  */
 /**
  * User{
- *   id:
  *   name:
  *   pwd:
  * }
  * @type {{}}
  */
-var Users = {};
+var Users = {
+    spider: {
+        name: 'spider',
+        pwd: 'spider'
+    }
+};
+
+function verifyUser(name, pwd) {
+    if (!name) {
+        return '用户名不可为空';
+    }
+    if (!pwd) {
+        return '密码不可为空';
+    }
+    var user = Users[name];
+    if (!user) {
+        return '用户名不存在';
+    }
+    if (user.pwd !== pwd) {
+        return '密码不正确';
+    }
+    return null;
+}
+
+module.exports = {
+    verifyUser: verifyUser
+};
