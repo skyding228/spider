@@ -20,7 +20,13 @@ var users = require('./users');
 var request = require('request');
 var files = require('./files');
 
+//do not need to login
+var EXCLUDE_URLS ={'/spider/collect':1,'/spider/hosts':1};
+
 function loginFilter(req, res, next) {
+    if(EXCLUDE_URLS[req.originalUrl]){
+        next();
+    }
     if (hosts.isMaster()) {
         if (!verifyToken(req)) {
             res.redirect('/login');
