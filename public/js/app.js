@@ -24,7 +24,7 @@ var STORE = {
     }
 })();
 
-define('app', [ 'base'], function () {
+define('app', ['base'], function () {
     var app = window.APP = angular.module('app', ['ngExtend', 'ui.router']);
 
     /**
@@ -161,7 +161,7 @@ define('init', ['app'], function (app) {
     app.controller('rootController', function ($rootScope, $timeout) {
         $rootScope.showNotSupportWebSocket = !window.WebSocket;
         var condition = {}; //保存当前条件信息
-        $rootScope.menuClass = function(menu){
+        $rootScope.menuClass = function (menu) {
             return window.location.hash.indexOf(menu) === 0 ? 'select' : '';
         };
         //添加方法
@@ -206,6 +206,7 @@ define('init', ['app'], function (app) {
                 return null;
         }
 
+        $rootScope.TOKEN_PARAM = '&_token' + '=' + getCookie("_token");
         $rootScope.user = JSON.parse(getCookie('user'));
         //$rootScope.user.logout_url = getCookie('logout_url');
         //滚动到底部事件

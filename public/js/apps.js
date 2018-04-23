@@ -1,7 +1,7 @@
 /**
  * Created by weichunhe on 2015/10/21.
  */
-require('app').register.controller('appsController', function ($scope, $myhttp, $timeout) {
+require('app').register.controller('appsController', function ($scope, $myhttp, $timeout, $rootScope) {
     $scope.files = [];
     $scope.search = null;
     $scope.pwdSegments = [];
@@ -90,6 +90,8 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
         files && files.forEach(file=> {
             var tree = FileTree;
             file.updateAt = now;
+            file.downloadUrl += $rootScope.TOKEN_PARAM;
+            file.tailUrl += $rootScope.TOKEN_PARAM;
             for (var i = 0; i < file.segments.length - 1; i++) {
                 var folder = file.segments[i];
                 if (!tree[folder]) {
