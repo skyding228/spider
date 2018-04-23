@@ -21,7 +21,7 @@ var hosts = require('../service/hosts');
 var files = require('../service/files');
 
 router.get('/verifyToken', function (req, res) {
-    res.json(sessions.verifyToken(req) ? 'yes' : 'no');
+    res.end(sessions.verifyToken(req) ? 'yes' : 'no');
 });
 
 router.get('/login', function (req, res, next) {

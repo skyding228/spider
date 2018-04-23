@@ -115,7 +115,7 @@ app.use(function (err, req, res, next) {
 });
 
 var port = 3000,
-    host = os.platform() === 'win32' ? '127.0.0.1' : '0.0.0.0';
+    host = '0.0.0.0';
 
 console.log('App listening to http://' + (env.IP || host ) + ':' + (env.PORT || port));
 app.listen(port, host);
