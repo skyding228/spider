@@ -271,8 +271,8 @@ function sendNewFilesCronJob() {
 }
 watchNewFiles();
 //start cron job
-setTimeout(sendAllFilesCronJob, 1000);
-setTimeout(sendNewFilesCronJob, 1000);
+setTimeout(sendAllFilesCronJob, 30000);
+setTimeout(sendNewFilesCronJob, 30000);
 module.exports = {
     addFiles: addFiles,
     getFiles: getFiles,
