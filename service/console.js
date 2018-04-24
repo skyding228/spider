@@ -3,7 +3,7 @@ function log(){
     var params = [new Date()];
     for(var i=0;i<arguments.length;i++){
         var arg = arguments[i];
-        params.push(_.isObject(arg) ? JSON.stringify(arg) : arg);
+        params.push(_.isObjectLike(arg) ? JSON.stringify(arg) : arg);
     }
     console.log(...params);
 }

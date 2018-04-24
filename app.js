@@ -3,6 +3,7 @@ var app = express();
 var expressWs = require('express-ws')(app);
 var os = require('os');
 var path = require('path');
+//var pty = {};
 var pty = require('node-pty');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
@@ -13,8 +14,8 @@ var sessions = require('./service/sessions');
 var terminals = {},
     logs = {};
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json({limit:'1024kb'}));
+app.use(bodyParser.urlencoded({limit:'1024kb',extended: false}));
 app.use(cookieParser());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

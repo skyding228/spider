@@ -108,6 +108,17 @@ function addSegmentsAndHost(files, host) {
     });
     return files;
 }
+/**
+ * only send needed properties
+ * @param files
+ */
+function pickToSend(files){
+    var pureFiles = [];
+    files.forEach(file =>{
+       pureFiles.push(_.pick(file,'size','shortName','path'));
+    });
+    return pureFiles;
+}
 
 function resoleUri(start, end) {
     var uri = null;
@@ -159,6 +170,7 @@ function addFiles(files, host) {
         FileMap[file.uri] = file;
     });
     if (newFiles.length) {
+        newFiles = pickToSend(newFiles);
         sendFiles(newFiles);
         WS.sendFilesToAllWS(newFiles);
     }
@@ -271,8 +283,8 @@ function sendNewFilesCronJob() {
 }
 watchNewFiles();
 //start cron job
-setTimeout(sendAllFilesCronJob, 30000);
-setTimeout(sendNewFilesCronJob, 30000);
+setTimeout(sendAllFilesCronJob, 3000);
+setTimeout(sendNewFilesCronJob, 3000);
 module.exports = {
     addFiles: addFiles,
     getFiles: getFiles,
