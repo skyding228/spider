@@ -7,7 +7,7 @@ IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v 172.17| grep -v inet6 
 USERS_FILE=
 
 name=spider
-OPTIONS='-v $USERS_FILE:/opt/spider/users.txt'
+OPTIONS='-v '$USERS_FILE':/opt/spider/users'
 case "$1" in
     start)
         docker rm -f $name

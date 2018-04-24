@@ -14,7 +14,7 @@
 
 var fs = require('fs');
 var os = require('os');
-var UserFilePath = '/opt/spider/users.txt';
+var UserFilePath = '/opt/spider/users';
 var path = require('path');
 var USE_FILE = false;
 /**
