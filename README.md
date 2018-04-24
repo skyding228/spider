@@ -14,7 +14,7 @@ Spider/ˈspaɪdər/ ，蜘蛛。憧憬它可以像蜘蛛一样，把所有的主
 `./spider.sh start`
 运行之前可以修改对应的参数(spider.sh中):
 - MASTER
-想把目录在哪个节点上访问,http://ip:port
+想把目录在哪个节点上访问,http://ip:port,主节点无需配置此属性
 
 - PORT
 默认3000
@@ -27,6 +27,14 @@ Spider/ˈspaɪdər/ ，蜘蛛。憧憬它可以像蜘蛛一样，把所有的主
 
 - LOG_DIR
 想要对外提供访问的宿主机上的目录,默认`/opt/logs`
+
+- USERS_FILE
+只有主节点需要指定,保存用户登录信息的文件完整路径;文件内容为每行单个用户数据`name|password(32位的MD5加密的小写字符串)`;以下是默认信息:
+```
+# name | password
+spider|f1a81d782dea6a19bdca383bffe68452
+```
+
 
 # 如何对外提供多个目录访问？
 把想要对外提供访问的目录挂载到容器的`/opt/logs`目录下，修改`spider.sh`;

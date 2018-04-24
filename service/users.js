@@ -11,6 +11,12 @@
  * @name            Role
  * @description
  */
+
+var fs = require('fs');
+var os = require('os');
+var UserFilePath = '/opt/spider/users.txt';
+var path = require('path');
+var USE_FILE = false;
 /**
  * User{
  *   name:
@@ -21,9 +27,77 @@
 var Users = {
     spider: {
         name: 'spider',
-        pwd: 'spider'
+        pwd: 'f1a81d782dea6a19bdca383bffe68452'
     }
 };
+
+(function initFromFile() {
+    UserFilePath = UserFilePath && path.resolve(UserFilePath);
+    if (!UserFilePath || !fs.existsSync(UserFilePath) || fs.statSync(UserFilePath).isDirectory()) {
+        console.log('There is no file which contains users,use default user.');
+        return;
+    }
+    USE_FILE = true;
+    var content = fs.readFileSync(UserFilePath).toString();
+    var users = splitToUsers(content);
+    if (users.length) {
+        Users = {};
+        users.forEach(user => {
+            Users[user.name] = user;
+        });
+    }
+    console.log(JSON.stringify(Users));
+})();
+
+
+function splitToUsers(content) {
+    var users = [];
+    content = content.replace(/\r/g, '');
+    var lines = content.split('\n');
+    lines.forEach(line=> {
+        line = line && line.trim();
+        if (!line || line[0] === '#') {
+            return;
+        }
+        var segments = line.split('|');
+        if (segments.length < 2) {
+            return;
+        }
+        if (segments[0].trim() && segments[1].trim()) {
+            users.push(newUser(segments[0].trim(), segments[1].trim()));
+        }
+    });
+    return users;
+}
+
+function saveUsersToFile() {
+    if (!USE_FILE) {
+        return;
+    }
+    var lines = ['# name | password'];
+    for (var k in Users) {
+        lines.push(userLine(Users[k]));
+    }
+    fs.writeFileSync(UserFilePath, lines.join(os.EOL));
+}
+function userLine(user) {
+    return user.name + '|' + user.pwd;
+}
+
+function newUser(name, pwd) {
+    return {name: name, pwd: pwd};
+}
+
+function addUser(name, pwd) {
+    name = name && name.trim();
+    pwd = pwd && pwd.trim();
+    if (!name || !pwd) {
+        return null;
+    }
+    Users[name] = newUser(name, pwd);
+    saveUsersToFile();
+    return Users[name];
+}
 
 function verifyUser(name, pwd) {
     if (!name) {
@@ -48,5 +122,6 @@ function getUser(name) {
 
 module.exports = {
     verifyUser: verifyUser,
+    addUser: addUser,
     getUser: getUser
 };
