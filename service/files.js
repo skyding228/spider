@@ -170,8 +170,7 @@ function addFiles(files, host) {
         FileMap[file.uri] = file;
     });
     if (newFiles.length) {
-        newFiles = pickToSend(newFiles);
-        sendFiles(newFiles);
+        sendFiles(pickToSend(newFiles));
         WS.sendFilesToAllWS(newFiles);
     }
     return newFiles;
