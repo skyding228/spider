@@ -100,8 +100,12 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
         $scope.tagTxt = txt.join('\r\n');
     }
 
+    function changeShowTagTxt(flag){
+        $scope.showTagTxt = flag;
+    }
     $scope.loadTags = loadTags;
     $scope.loadAllTags = loadAllTags;
     $scope.getTagTxt = getTagTxt;
+    $scope.changeShowTagTxt = changeShowTagTxt;
     loadHosts();
 });

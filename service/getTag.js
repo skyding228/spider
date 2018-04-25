@@ -16,6 +16,7 @@ var config = require('./configuration');
 var request = require('request');
 var files = require('./files');
 var sessions = require('./sessions');
+var console = require('./console');
 
 function splitToTags(file) {
     file = file && file.replace(/\r/g, '');
@@ -28,7 +29,7 @@ function splitToTags(file) {
         }
     });
     return tags;
-}
+};
 
 
 function getTags(req, res) {
