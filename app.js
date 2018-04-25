@@ -3,8 +3,8 @@ var app = express();
 var expressWs = require('express-ws')(app);
 var os = require('os');
 var path = require('path');
-//var pty = {};
-var pty = require('node-pty');
+var pty = {};
+//var pty = require('node-pty');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var env = process.env;
@@ -14,8 +14,8 @@ var sessions = require('./service/sessions');
 var terminals = {},
     logs = {};
 
-app.use(bodyParser.json({limit:'1024kb'}));
-app.use(bodyParser.urlencoded({limit:'1024kb',extended: false}));
+app.use(bodyParser.json({limit: '1024kb'}));
+app.use(bodyParser.urlencoded({limit: '1024kb', extended: false}));
 app.use(cookieParser());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -57,6 +57,7 @@ app.post('/terminals', function (req, res) {
     term.on('data', function (data) {
         logs[term.pid] += data;
     });
+    term.write('su node \n');
     res.send(term.pid.toString());
     res.end();
 });
@@ -85,6 +86,10 @@ app.ws('/terminals/:pid', function (ws, req) {
         }
     });
     ws.on('message', function (msg) {
+        if (isExitCmd(msg)) {
+            ws.close();
+            return;
+        }
         term.write(msg);
     });
     ws.on('close', function () {
@@ -95,8 +100,20 @@ app.ws('/terminals/:pid', function (ws, req) {
         delete logs[term.pid];
     });
 });
+var EXIT = 'exit';
+function isExitCmd(msg) {
+    if (msg.indexOf(EXIT) === -1) {
+        return false;
+    }
+    var cmds = msg.split(/\W+/);
+    for (var i = 0; i < cmds.length; i++) {
+        if (EXIT === cmds[i]) {
+            return true;
+        }
+    }
+    return false;
+}
 
-app.ws('/ws/files/:pid')
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
