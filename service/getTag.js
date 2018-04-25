@@ -42,6 +42,7 @@ function extractTag(line) {
 }
 
 function getTags(req, res) {
+    console.log('exec shell at ' + config.get_tag_shell_path);
     exec(config.get_tag_shell_path, function (err, stdout, stderr) {
         if (err) {
             console.log(err);
