@@ -6,6 +6,10 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     $scope.tags = [];
     $scope.tagHost = '';
     $scope.loading = false;
+    $scope.loadingAll = 0;
+    $scope.tagTxt = '';
+    $scope.showTagTxt = false;
+
 
     function loadHosts() {
         $myhttp.get('/spider/hosts', function (data) {
@@ -30,16 +34,21 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
 
 
     function loadTags(host) {
+        $scope.tags = [];
         $scope.loading = true;
+        doLoad(host);
+    }
+
+    function doLoad(host) {
         $scope.tagHost = host.name;
         var url = '/spider/getTag?' + $rootScope.TOKEN_PARAM;
         if (!host.master) {
             url = url + '&hostUrl=' + removeLastSlash(host.url);
         }
-        $scope.tags = [];
+
         $myhttp.get(url, function (data) {
             $scope.loading = false;
-            //data.sort(sortApps);
+            $scope.loadingAll --;
             try {
                 if (!Array.isArray(data)) {
                     data = JSON.parse(data);
@@ -47,22 +56,52 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
             } catch (e) {
                 console.log('get tag error！', url, e);
             }
-            $scope.tags = data;
+            setTags(data);
         });
     }
 
-    function sortApps(t1, t2) {
-        if (t1.app > t2.app) {
-            return 1;
+    function loadAllTags() {
+        $scope.loadingAll = $scope.hosts.length;
+        $scope.tags = [];
+        $scope.hosts.forEach(host => {
+            doLoad(host);
+        });
+    }
+
+    function setTags(data) {
+        data.forEach(line => {
+            var tag = extractTag(tag);
+            if (tag) {
+                $scope.tags.push(tag);
+            }
+        });
+    }
+
+//fj340_dpm-task: tag with fj316_dpm_func121_build_20171030.1 from http://svn.vfinance.cn/svn/fujie/src/pmd/basis/dpm/branches/fit_wangshang_2.1.0@228486
+// {app:fj340_dpm-task,tag:fj316_dpm_func121_build_20171030.1,branch:fit_wangshang_2.1.0@228486}
+    function extractTag(line) {
+        line = line && line.trim();
+        if (!line) {
+            return null;
         }
-        if (t1.app === t2.app) {
-            return 0;
-        }
-        if (t1.app < t2.app) {
-            return -1;
-        }
+        var segments = line.split(/\s+/);
+        var app = segments[0].substring(0, segments[0].length - 1); //remove :
+        var tag = segments[3];
+        var branch = segments[5].substring(segments[5].lastIndexOf('/') + 1);
+        return {app: app, tag: tag, branch: branch, title: line};
+    }
+
+    function getTagTxt() {
+        $scope.tagTxt = '';
+        var txt = [];
+        $scope.tags.forEach(tag=> {
+            txt.push(tag.title);
+        });
+        $scope.tagTxt = txt.join('\r\n');
     }
 
     $scope.loadTags = loadTags;
+    $scope.loadAllTags = loadAllTags;
+    $scope.getTagTxt = getTagTxt;
     loadHosts();
 });

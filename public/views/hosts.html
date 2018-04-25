@@ -5,6 +5,10 @@
             <div class="box  box-primary">
                 <div class="box-header">
                     <h3 class="box-title">Hosts</h3>
+
+                    <div class="box-tools">
+                        <button class="badge bg-green" ng-click="loadAllTags();">&nbsp;Tag&nbsp;</button>
+                    </div>
                 </div>
                 <div class="box-body no-padding">
                     <table class="table table-striped">
@@ -28,11 +32,17 @@
             <div class="box  box-success">
                 <div class="box-header">
                     <h3 class="box-title">Tags<span ng-show="tagHost">-{{tagHost}}</span> <i ng-show="loading"
-                                                                                             class="fa fa-spinner"></i>
+                                                                                             class="fa fa-spinner"><i ng-show="loadingAll > 0"
+                                                                                                                      class="fa fa-spinner"></i>
                     </h3>
+
+                    <div class="box-tools">
+                        <button class="btn btn-primary" ng-show="!showTagTxt" ng-click="showTagTxt=false;">显示原文</button>
+                        <button class="btn btn-primary" ng-show="showTagTxt" ng-click="showTagTxt=true;">显示表格</button>
+                    </div>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body table-responsive no-padding">
+                <div ng-show="!showTagTxt" class="box-body table-responsive no-padding">
                     <table class="table table-hover">
                         <tbody>
                         <tr>
@@ -41,7 +51,7 @@
                             <th>Tag</th>
                             <th>Branch</th>
                         </tr>
-                        <tr ng-repeat="tag in tags">
+                        <tr ng-repeat="tag in tags" title="{{tag.title}}">
                             <td>{{$index + 1}}</td>
                             <td>{{tag.app}}</td>
                             <td>{{tag.tag}}</td>
@@ -50,6 +60,9 @@
                         </tr>
                         </tbody>
                     </table>
+                </div>
+                <div ng-show="showTagTxt" class="box-body no-padding">
+                    {{tagTxt}}
                 </div>
             </div>
         </div>
