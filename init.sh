@@ -1,4 +1,5 @@
 #!/bin/bash
+whoami
 # change hostname
 if [ $HOSTNAME ]; then
   hostname $HOSTNAME
