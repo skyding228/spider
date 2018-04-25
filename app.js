@@ -42,7 +42,7 @@ app.use('/ws', websockets);
 app.post('/terminals', function (req, res) {
     var cols = parseInt(req.query.cols),
         rows = parseInt(req.query.rows),
-        term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', [], {
+        term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c','su node'], {
             encoding: null,
             name: 'xterm-color',
             cols: cols || 80,
@@ -57,7 +57,7 @@ app.post('/terminals', function (req, res) {
     term.on('data', function (data) {
         logs[term.pid] += data;
     });
-    term.write('su node \n');
+    //term.write('su node \n');
     res.send(term.pid.toString());
     res.end();
 });
@@ -86,11 +86,6 @@ app.ws('/terminals/:pid', function (ws, req) {
         }
     });
     ws.on('message', function (msg) {
-        console.log(msg);
-        if (isExitCmd(msg)) {
-            ws.close();
-            return;
-        }
         term.write(msg);
     });
     ws.on('close', function () {
@@ -101,19 +96,6 @@ app.ws('/terminals/:pid', function (ws, req) {
         delete logs[term.pid];
     });
 });
-var EXIT = 'exit';
-function isExitCmd(msg) {
-    if (msg.indexOf(EXIT) === -1) {
-        return false;
-    }
-    var cmds = msg.split(/\W+/);
-    for (var i = 0; i < cmds.length; i++) {
-        if (EXIT === cmds[i]) {
-            return true;
-        }
-    }
-    return false;
-}
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
