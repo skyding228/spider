@@ -8,6 +8,7 @@ RUN cd /opt/spider && cnpm install
 RUN apt-get update
 RUN apt-get install -y lrzsz
 RUN apt-get install -y vim
+RUN echo "syntax on" >> /etc/vim/vimrc
 RUN rm -f ~/.bashrc
 RUN mv /opt/spider/bin/bashrc ~/.bashrc
 RUN rm -rf /opt/yarn-v1.5.1
