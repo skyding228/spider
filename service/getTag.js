@@ -64,7 +64,7 @@ function getRemoteTags(hostUrl, token, res) {
         , function (err, resp, body) {
             var tags = [];
             if (err) {
-                console.log('send to ' + master + ' err!', err);
+                console.log('send to ' + url + ' err!', err);
             } else {
                 tags = body;
             }
