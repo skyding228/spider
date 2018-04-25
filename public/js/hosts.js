@@ -32,11 +32,14 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     function loadTags(host) {
         $scope.loading = true;
         $scope.tagHost = host.name;
-        var url = removeLastSlash(host.url) + '/spider/getTag?' + $rootScope.TOKEN_PARAM;
+        var url = '/spider/getTag?' + $rootScope.TOKEN_PARAM;
+        if (!host.master) {
+            url = url + '&hostUrl=' + removeLastSlash(host.url);
+        }
         $scope.tags = [];
         $myhttp.get(url, function (data) {
             $scope.loading = false;
-            data.sort(sortApps);
+            //data.sort(sortApps);
             $scope.tags = data;
         });
     }

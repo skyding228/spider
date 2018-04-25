@@ -13,6 +13,9 @@
  */
 var exec = require('child_process').exec;
 var config = require('./configuration');
+var request = require('request');
+var files = require('./files');
+var sessions = require('./sessions');
 
 function splitToTags(file) {
     file = file && file.replace(/\r/g, '');
@@ -42,6 +45,15 @@ function extractTag(line) {
 }
 
 function getTags(req, res) {
+    var hostUrl = req.body.hostUrl;
+    if (hostUrl) {
+        var token = req.body[sessions.tokenKey];
+        getRemoteTags(hostUrl, token, res);
+    } else {
+        getLocalTags(res);
+    }
+}
+function getLocalTags(res) {
     console.log('exec shell at ' + config.get_tag_shell_path);
     exec(config.get_tag_shell_path, function (err, stdout, stderr) {
         if (err) {
@@ -55,6 +67,20 @@ function getTags(req, res) {
         console.log(tags);
         res.json(tags);
     });
+}
+
+function getRemoteTags(hostUrl, token, res) {
+    var url = files.resoleUri(hostUrl, '/spider/getTag?' + sessions.tokenKey + '=' + token);
+    request.get({url: url}
+        , function (err, resp, body) {
+            var tags = [];
+            if (err) {
+                console.log('send to ' + master + ' err!', err);
+            } else {
+                tags = body;
+            }
+            res.json(tags);
+        });
 }
 
 module.exports = {
