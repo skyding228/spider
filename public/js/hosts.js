@@ -70,7 +70,7 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
 
     function setTags(data) {
         data.forEach(line => {
-            var tag = extractTag(tag);
+            var tag = extractTag(line);
             if (tag) {
                 $scope.tags.push(tag);
             }
