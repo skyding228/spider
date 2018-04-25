@@ -12,7 +12,7 @@
  * @description
  */
 var exec = require('child_process').exec;
-
+var config = require('./configuration');
 
 function splitToTags(file) {
     file = file && file.replace(/\r/g, '');
@@ -42,7 +42,7 @@ function extractTag(line) {
 }
 
 function getTags(req, res) {
-    exec('/opt/applications/gettag.sh', function (err, stdout, stderr) {
+    exec(config.get_tag_shell_path, function (err, stdout, stderr) {
         if (err) {
             console.log(err);
         }

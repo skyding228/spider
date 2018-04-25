@@ -21,7 +21,8 @@ var config = {
     //the period of send new files
     send_new_files_ms: 5 * 1000,
     // send too many files to make a error, so if too many files ,need to  send in batches
-    files_batch_size: 300
+    files_batch_size: 300,
+    get_tag_shell_path: '/opt/spider/applications/gettag.sh'
 };
 
 
