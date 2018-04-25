@@ -45,9 +45,9 @@ function extractTag(line) {
 }
 
 function getTags(req, res) {
-    var hostUrl = req.body.hostUrl;
+    var hostUrl = req.query.hostUrl;
     if (hostUrl) {
-        var token = req.body[sessions.tokenKey];
+        var token = req.query[sessions.tokenKey];
         getRemoteTags(hostUrl, token, res);
     } else {
         getLocalTags(res);
