@@ -86,6 +86,7 @@ app.ws('/terminals/:pid', function (ws, req) {
         }
     });
     ws.on('message', function (msg) {
+        console.log(msg);
         if (isExitCmd(msg)) {
             ws.close();
             return;
