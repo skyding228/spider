@@ -40,6 +40,13 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
         $myhttp.get(url, function (data) {
             $scope.loading = false;
             //data.sort(sortApps);
+            try {
+                if (!Array.isArray(data)) {
+                    data = JSON.parse(data);
+                }
+            } catch (e) {
+                console.log('get tag error！', url, e);
+            }
             $scope.tags = data;
         });
     }
