@@ -1,4 +1,5 @@
 var express = require('express');
+var cors = require('cors')
 var app = express();
 var expressWs = require('express-ws')(app);
 var os = require('os');
@@ -14,6 +15,7 @@ var sessions = require('./service/sessions');
 var terminals = {},
     logs = {};
 
+app.options('/spider/getTag', cors());
 app.use(bodyParser.json({limit: '1024kb'}));
 app.use(bodyParser.urlencoded({limit: '1024kb', extended: false}));
 app.use(cookieParser());
@@ -24,6 +26,7 @@ app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 app.use(login);
 app.use(sessions.loginFilter);
+
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/html/home.html');
