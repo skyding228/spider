@@ -80,7 +80,7 @@ function getRemoteTags(hostUrl, token, res) {
             } else {
                 tags = body;
             }
-            res.json(tags);
+            res.end(tags);
         });
 }
 
