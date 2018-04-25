@@ -71,6 +71,7 @@ function getLocalTags(res) {
 
 function getRemoteTags(hostUrl, token, res) {
     var url = files.resoleUri(hostUrl, '/spider/getTag?' + sessions.tokenKey + '=' + token);
+    console.log('get remote tags from '+url);
     request.get({url: url}
         , function (err, resp, body) {
             var tags = [];
