@@ -5,6 +5,8 @@ var files = require('../service/files');
 var hosts = require('../service/hosts');
 var console = require('../service/console');
 
+var TAG = require('../service/getTag');
+
 /* GET home page. */
 router.get('/files', function (req, res, next) {
     res.json(files.getFiles());
@@ -25,5 +27,7 @@ router.get('/download', function (req, res) {
     console.log('download ' + req.query.path);
     res.download(req.query.path);
 });
+
+router.get('/getTag', TAG.getTags);
 
 module.exports = router;
