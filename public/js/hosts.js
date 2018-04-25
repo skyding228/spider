@@ -61,6 +61,7 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     }
 
     function loadAllTags() {
+        $scope.tagHost = '全部';
         $scope.loadingAll = $scope.hosts.length;
         $scope.tags = [];
         $scope.hosts.forEach(host => {
