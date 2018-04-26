@@ -228,7 +228,7 @@ function send(files, host, master) {
         request({
             uri: master,
             method: 'POST',
-            json: {host: _.pick(host, 'url', 'name'), files: files}
+            json: {host: host, files: files}
         }, function (err, resp, body) {
             if (err) {
                 console.log('send to ' + master + ' err!', err);
