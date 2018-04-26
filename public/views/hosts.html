@@ -52,7 +52,7 @@
                             <th>Branch</th>
                         </tr>
                         <tr ng-repeat="(key,tag) in tags" title="{{tag.title}}">
-                            <td>{{$index + 1}}<span class="badge bg-yellow" ng-show="tag.count">{{tag.count}}</span></td>
+                            <td>{{$index + 1}}<span class="badge bg-yellow pull-right" ng-show="tag.count">{{tag.count}}</span></td>
                             <td>{{tag.app}}</td>
                             <td>{{tag.tag}}</td>
                             <td>{{tag.branch}}</td>
