@@ -36,11 +36,11 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     function loadTags(host) {
         $scope.tags = [];
         $scope.loading = true;
+        $scope.tagHost = host.name;
         doLoad(host);
     }
 
     function doLoad(host) {
-        $scope.tagHost = host.name;
         var url = '/spider/getTag?' + $rootScope.TOKEN_PARAM;
         if (!host.master) {
             url = url + '&hostUrl=' + removeLastSlash(host.url);
