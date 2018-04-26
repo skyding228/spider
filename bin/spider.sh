@@ -14,7 +14,7 @@ fi
 case "$1" in
     start)
         docker rm -f $name
-        docker run -d -p $IP:$PORT:3000 -e PORT=$PORT -e HOSTNAME=$HOSTNAME -e IP=$IP -e MASTER=$MASTER --hostname=$HOSTNAME -v $LOG_DIR:/opt/logs:ro $OPTIONS --name $name spider /opt/spider/run.sh
+        docker run -d -p $IP:$PORT:3000 -e PORT=$PORT -e HOSTNAME=$HOSTNAME -e IP=$IP -e PUBLIC_IP=$PUBLIC_IP -e MASTER=$MASTER --hostname=$HOSTNAME -v $LOG_DIR:/opt/logs:ro $OPTIONS --name $name spider /opt/spider/run.sh
         nohup docker logs -f $name > ${name}.log 2>&1 &
         tail -f ${name}.log
         ;;
