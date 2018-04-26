@@ -103,6 +103,9 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
 
     function changeShowTagTxt(flag){
         $scope.showTagTxt = flag;
+        if(flag){
+            getTagTxt();
+        }
     }
     $scope.loadTags = loadTags;
     $scope.loadAllTags = loadAllTags;
