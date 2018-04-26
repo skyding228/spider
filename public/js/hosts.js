@@ -3,13 +3,13 @@
  */
 require('app').register.controller('hostsController', function ($scope, $myhttp, $timeout, $rootScope) {
     $scope.hosts = [];
-    $scope.tags = [];
+    $scope.tags = {};
     $scope.tagHost = '';
     $scope.loading = false;
     $scope.loadingAll = 0;
     $scope.tagTxt = '';
     $scope.showTagTxt = false;
-
+    $scope.duplicateTags = [];
 
     function loadHosts() {
         $myhttp.get('/spider/hosts', function (data) {
@@ -34,7 +34,8 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
 
 
     function loadTags(host) {
-        $scope.tags = [];
+        $scope.tags = {};
+        $scope.duplicateTags = [];
         $scope.loading = true;
         $scope.tagHost = host.name;
         doLoad(host);
@@ -48,7 +49,7 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
 
         $myhttp.get(url, function (data) {
             $scope.loading = false;
-            $scope.loadingAll --;
+            $scope.loadingAll--;
             try {
                 if (!Array.isArray(data)) {
                     data = JSON.parse(data);
@@ -61,9 +62,10 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     }
 
     function loadAllTags() {
-        $scope.tagHost = '全部';
+        $scope.duplicateTags = [];
+        $scope.tagHost = '全部(已去重)';
         $scope.loadingAll = $scope.hosts.length;
-        $scope.tags = [];
+        $scope.tags = {};
         $scope.hosts.forEach(host => {
             doLoad(host);
         });
@@ -73,7 +75,11 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
         data.forEach(line => {
             var tag = extractTag(line);
             if (tag) {
-                $scope.tags.push(tag);
+                if($scope.tags[line]){
+                    tag.count = tag.count || 1;
+                    tag.count ++;
+                }
+                $scope.tags[line] =tag ;
             }
         });
     }
@@ -95,18 +101,20 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     function getTagTxt() {
         $scope.tagTxt = '';
         var txt = [];
-        $scope.tags.forEach(tag=> {
+        for (var k in $scope.tags) {
+            var tag = $scope.tags[k];
             txt.push(tag.title);
-        });
+        }
         $scope.tagTxt = txt.join('\r\n');
     }
 
-    function changeShowTagTxt(flag){
+    function changeShowTagTxt(flag) {
         $scope.showTagTxt = flag;
-        if(flag){
+        if (flag) {
             getTagTxt();
         }
     }
+
     $scope.loadTags = loadTags;
     $scope.loadAllTags = loadAllTags;
     $scope.getTagTxt = getTagTxt;

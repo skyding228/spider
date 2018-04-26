@@ -14,9 +14,6 @@
     <link rel="stylesheet" href="/public/css/select2-bootstrap.css"/>
     <link rel="shortcut icon" href="/public/imgs/spider.png"
           type="image/x-icon"/>
-    <script type="text/javascript" src="/public/lib/js/require.min.js"></script>
-    <script type="text/javascript" src="/public/lib/js/require-config.js"></script>
-    <script type="text/javascript" src="/public/js/app.js"></script>
 
 </head>
 <body class="skin-blue sidebar-none fixed" ng-controller="rootController">
@@ -89,7 +86,18 @@
 
 <div class="content-wrapper">
     <div class="content body">
-        <div ui-view></div>
+        <div ui-view>
+            <div class="row" style="padding-top: 100px;">
+                <div class="col-xs-4 col-xs-offset-4">
+                    <img src="/public/imgs/loading.gif">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-xs-offset-4" style="text-align: center;">
+                    <span>可开启浏览器缓存,下次就看不到我了!</span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div id="infodialog" class="modal">
@@ -106,4 +114,7 @@
     </div>
 </div>
 </body>
+<script type="text/javascript" src="/public/lib/js/require.min.js"></script>
+<script type="text/javascript" src="/public/lib/js/require-config.js"></script>
+<script type="text/javascript" src="/public/js/app.js"></script>
 </html>
