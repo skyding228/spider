@@ -23,7 +23,10 @@ Spider/ˈspaɪdər/ ，蜘蛛。憧憬它可以像蜘蛛一样，把所有的主
 用于在Master节点上显示的名称，默认使用`hostname`命令获取，可以直接配置为想要显示的名称
 
 - IP
-这个要网络可以访问的IP，默认使用`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v 172.17| grep -v inet6 | awk '{print $2}' | tr -d "addr:"`获取，如果有多个公网IP时可以明确指定
+节点间交互的IP，默认使用`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v 172.17| grep -v inet6 | awk '{print $2}' | tr -d "addr:"`获取，如果有多个公网IP时可以明确指定
+
+- PUBLIC_IP
+如果访问端无法访问IP字段指定的地址，可以通过PUBLIC_IP指定公网地址，默认与IP值相同,可不配置。
 
 - LOG_DIR
 想要对外提供访问的宿主机上的目录,默认`/opt/logs`

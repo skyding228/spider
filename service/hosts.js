@@ -26,8 +26,10 @@ var _ = require('lodash');
 var config = require('./configuration');
 
 function localhost() {
+    var PUBLIC_IP = env.PUBLIC_IP || env.IP;
     var local = {};
-    local.url = 'http://' + env.IP + ':' + env.PORT;
+    local.intraUrl = 'http://' + env.IP + ':' + env.PORT;
+    local.url = 'http://' + PUBLIC_IP + ':' + env.PORT;
     local.name = env.HOSTNAME || 'localhost';
     if (!master) {
         local.master = 1;
@@ -71,6 +73,7 @@ function getHosts() {
     }
     return _.valuesIn(hosts);
 }
+
 
 module.exports = {
     addHost: addHost,

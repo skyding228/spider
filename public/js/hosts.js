@@ -43,7 +43,7 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     function doLoad(host) {
         var url = '/spider/getTag?' + $rootScope.TOKEN_PARAM;
         if (!host.master) {
-            url = url + '&hostUrl=' + removeLastSlash(host.url);
+            url = url + '&hostUrl=' + removeLastSlash(host.intraUrl);
         }
 
         $myhttp.get(url, function (data) {
