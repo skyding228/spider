@@ -32,10 +32,15 @@ function makeConfigFile(hosts) {
 function reload(hosts) {
     makeConfigFile(hosts);
     Exec('nginx -s reload', function (err, stdout, stderr) {
-        console.log(err, stdout, stderr);
+        console.log('reload nginx',err, stdout, stderr);
     });
 }
 
+function start() {
+    Exec('service nginx start', function (err, stdout, stderr) {
+        console.log('start nginx',err, stdout, stderr);
+    });
+}
 function assignUrl(baseUrl,host) {
     // only exec on master
     if (!USE_NGINX ) {
@@ -56,5 +61,6 @@ if (module === require.main) {
 module.exports = {
     USE_NGINX:USE_NGINX,
     assignUrl: assignUrl,
-    reload: reload
+    reload: reload,
+    start:start
 };
