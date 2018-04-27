@@ -309,7 +309,7 @@ function runRealTerminal() {
     term.attach(socket);
 
     term._initialized = true;
-    changeToDir();
+    setTimeout(changeToDir,300);
 }
 
 function changeToDir() {
