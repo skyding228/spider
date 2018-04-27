@@ -18,7 +18,7 @@ var Fs = require('fs');
 var _ = require('lodash'); //https://lodash.com/docs/4.17.5
 var Exec = require('child_process').exec;
 
-var CONFIG_FILE_PATH = Path.resolve('/etc/nginx/config.d/spider.conf');
+var CONFIG_FILE_PATH = Path.resolve('/etc/nginx/conf.d/spider.conf');
 var USE_NGINX = true;
 
 var genConfig = _.template(Fs.readFileSync(Path.resolve(__dirname, 'nginx_lodash_template.txt')));
