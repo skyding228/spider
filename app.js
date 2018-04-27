@@ -122,6 +122,7 @@ var port = 3000,
     host = '0.0.0.0';
 
 if(hosts.isMaster() && nginx.useNginx()){
+    console.original('use nginx...');
     port = 3001;
     nginx.start(function(){
         nginx.reload(hosts.getHosts());

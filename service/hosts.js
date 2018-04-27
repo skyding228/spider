@@ -35,7 +35,7 @@ function localhost() {
     if (!master) {
         master = local.url;
         local.master = 1;
-        nginx.useNginx(false);
+        nginx.useNginx(true);
     }
     return local;
 }
