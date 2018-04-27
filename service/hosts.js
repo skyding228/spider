@@ -45,6 +45,9 @@ function isMaster() {
 
 function addHost(host) {
     host.updateAt = new Date().getTime();
+    if(host.master){
+        master = host.url;
+    }
     hosts[host.url] = host;
 }
 

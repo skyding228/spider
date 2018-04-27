@@ -19,6 +19,7 @@ var hosts = require('./hosts');
 var request = require('request');
 var console = require('./console');
 var WS = require('../service/ws');
+var utils = require('./utils').urls;
 
 var PATH = require('path');
 
@@ -71,7 +72,7 @@ function listFilesRecursively(path, filesList) {
     files.forEach(walk);
     function walk(file) {
         var absolutePath = path + '/' + file;
-        if(!fs.existsSync(absolutePath)){
+        if (!fs.existsSync(absolutePath)) {
             return;
         }
         var states = fs.statSync(absolutePath);
@@ -112,24 +113,16 @@ function addSegmentsAndHost(files, host) {
  * only send needed properties
  * @param files
  */
-function pickToSend(files){
+function pickToSend(files) {
     var pureFiles = [];
-    files.forEach(file =>{
-       pureFiles.push(_.pick(file,'size','shortName','path'));
+    files.forEach(file => {
+        pureFiles.push(_.pick(file, 'size', 'shortName', 'path'));
     });
     return pureFiles;
 }
 
 function resoleUri(start, end) {
-    var uri = null;
-    if (!start.endsWith('/')) {
-        start = start + '/';
-    }
-    if (end.startsWith('/')) {
-        end = end.substring(1);
-    }
-    uri = start + end;
-    return uri;
+    return utils.resoleUri(start, end);
 }
 
 /**
@@ -288,5 +281,5 @@ module.exports = {
     addFiles: addFiles,
     getFiles: getFiles,
     getLocalFiles: getLocalFiles,
-    resoleUri:resoleUri
+    resoleUri: resoleUri
 };
