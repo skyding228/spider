@@ -35,6 +35,7 @@ function localhost() {
     if (!master) {
         master = local.url;
         local.master = 1;
+        nginx.useNginx(false);
     }
     return local;
 }
@@ -48,10 +49,7 @@ function isMaster() {
 function addHost(host) {
     host.updateAt = new Date().getTime();
     updateMaster(host);
-    if(isMaster()){
-        nginx.assignUrl(getMaster(),host);
-    }
-
+    nginx.assignUrl(getMaster(),host);
     var is_new = false;
     if(!hosts[host.url]){
         is_new = true;

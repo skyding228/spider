@@ -19,7 +19,7 @@ var _ = require('lodash'); //https://lodash.com/docs/4.17.5
 var Exec = require('child_process').exec;
 
 var CONFIG_FILE_PATH = Path.resolve('/etc/nginx/conf.d/spider.conf');
-var USE_NGINX = true;
+var USE_NGINX = false;
 
 var genConfig = _.template(Fs.readFileSync(Path.resolve(__dirname, 'nginx_lodash_template.txt')));
 
@@ -30,21 +30,27 @@ function makeConfigFile(hosts) {
 }
 
 function reload(hosts) {
+    if (!useNginx()) {
+        return;
+    }
     makeConfigFile(hosts);
     Exec('nginx -s reload', function (err, stdout, stderr) {
-        console.log('reload nginx',err, stdout, stderr);
+        console.log('reload nginx', err, stdout, stderr);
     });
 }
 
 function start(cb) {
+    if (!useNginx()) {
+        return;
+    }
     Exec('service nginx start', function (err, stdout, stderr) {
-        console.log('start nginx',err, stdout, stderr);
+        console.log('start nginx', err, stdout, stderr);
         cb(err, stdout, stderr);
     });
 }
-function assignUrl(baseUrl,host) {
+function assignUrl(baseUrl, host) {
     // only exec on master
-    if (!USE_NGINX ) {
+    if (!USE_NGINX) {
         return;
     }
     if (host.master) {
@@ -54,14 +60,20 @@ function assignUrl(baseUrl,host) {
     host.url = urls.resoleUri(baseUrl, host.name);
 }
 
+function useNginx(flag) {
+    if (flag !== undefined) {
+        USE_NGINX = flag;
+    }
+    return USE_NGINX;
+}
 
 if (module === require.main) {
     makeConfigFile();
 }
 
 module.exports = {
-    USE_NGINX:USE_NGINX,
+    useNginx: useNginx,
     assignUrl: assignUrl,
     reload: reload,
-    start:start
+    start: start
 };
