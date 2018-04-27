@@ -16,6 +16,7 @@ var hosts = {};
 var env = process.env;
 var console = require('./console');
 var urls = require('./utils').urls;
+var nginx = require('./nginx');
 
 //env.MASTER = 'http://localhost:3000';
 //env.IP = '10.5.16.5';
@@ -30,8 +31,9 @@ function localhost() {
     var local = {};
     local.intraUrl = 'http://' + env.IP + ':' + env.PORT;
     local.url = urls.removeLastSlash(env.PUBLIC_URL) || local.intraUrl;
-    local.name = env.HOSTNAME || 'localhost';
+    local.name = env.HOSTNAME || env.IP || 'localhost';
     if (!master) {
+        master = local.url;
         local.master = 1;
     }
     return local;
@@ -45,10 +47,23 @@ function isMaster() {
 
 function addHost(host) {
     host.updateAt = new Date().getTime();
-    if(host.master){
-        master = host.url;
+    updateMaster(host);
+    nginx.assignUrl(host);
+    var is_new = false;
+    if(!hosts[host.url]){
+        is_new = true;
+        //this is a new host
     }
     hosts[host.url] = host;
+    if(is_new){
+        nginx.reload();
+    }
+}
+
+function updateMaster(host){
+    if (host.master) {
+        master = host.url;
+    }
 }
 
 function addHosts(hosts) {
