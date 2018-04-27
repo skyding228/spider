@@ -11,6 +11,9 @@ function log() {
     }
     console.log(...params);
 }
+
+
 module.exports = {
-    log: log
+    log: log,
+    original:console.log
 };

@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser');
 var env = process.env;
 var login = require('./routes/login');
 var sessions = require('./service/sessions');
+var console = require('./service/console');
 
 var terminals = {},
     logs = {};
@@ -118,5 +119,5 @@ app.use(function (err, req, res, next) {
 var port = 3000,
     host = '0.0.0.0';
 
-console.log('App listening to http://' + (env.IP || host ) + ':' + (env.PORT || port));
+console.original('App listening to http://' + (env.IP || host ) + ':' + (env.PORT || port));
 app.listen(port, host);
