@@ -10,7 +10,6 @@ var cookieParser = require('cookie-parser');
 var env = process.env;
 var login = require('./routes/login');
 var sessions = require('./service/sessions');
-//var console = require('./service/console');
 
 var terminals = {},
     logs = {};
