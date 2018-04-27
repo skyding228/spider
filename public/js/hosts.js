@@ -12,7 +12,7 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     $scope.duplicateTags = [];
 
     function loadHosts() {
-        $myhttp.get('/spider/hosts', function (data) {
+        $myhttp.get('spider/hosts', function (data) {
             data = data || [];
             data.forEach(host=> {
                 if (host.master) {
@@ -42,7 +42,7 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     }
 
     function doLoad(host) {
-        var url = '/spider/getTag?' + $rootScope.TOKEN_PARAM;
+        var url = 'spider/getTag?' + $rootScope.TOKEN_PARAM;
         if (!host.master) {
             url = url + '&hostUrl=' + removeLastSlash(host.intraUrl);
         }

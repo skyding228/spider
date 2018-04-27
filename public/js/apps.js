@@ -49,7 +49,7 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
     }
 
     function loadFilesUseHttp() {
-        $myhttp.get('/spider/files', function (data) {
+        $myhttp.get('spider/files', function (data) {
             addFilesToTree(data);
             searchFile();
         });
@@ -57,14 +57,14 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
 
     function loadFilesUseWs() {
         if (!FileWSId) {
-            $.get(window.location.origin + '/ws/new', function (data) {
+            $.get(window.location.origin + GetRelativePath() + '/ws/new', function (data) {
                 FileWSId = data;
                 loadFilesUseWs();
             });
             return;
         }
         if (!FileWS) {
-            FileWS = new WebSocket('ws://' + window.location.host + '/ws/files/' + FileWSId);
+            FileWS = new WebSocket('ws://' + window.location.host + GetRelativePath() + '/ws/files/' + FileWSId);
             FileWS.onmessage = function (event) {
                 var files = JSON.parse(event.data);
                 console.log("receive " + files.length + " files!");

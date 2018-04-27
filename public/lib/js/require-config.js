@@ -2,11 +2,21 @@
  * Created by weichunhe on 2015/7/6.
  */
 (function (_t) {
-    var min_suffix = _t.UGLIFY ? '-min' : '', //是否使用压缩文件
-        ROOT = '/public/',
-        BASE = ROOT + 'js' + min_suffix + '/',
+
+    _t.GetRelativePath = function () {
+        var path = location.pathname;
+        if (path) {
+            path = path.substring(0, path.lastIndexOf('/'));
+        } else {
+            path = '';
+        }
+        return path;
+    };
+    var pathPrefix = _t.GetRelativePath();
+    var ROOT = pathPrefix + '/public/',
+        BASE = ROOT + 'js/',
         LIB = ROOT + 'lib/js' + '/',
-        BOWER_ROOT = '/node_modules/';
+        BOWER_ROOT = pathPrefix + '/node_modules/';
     var config = {
         baseUrl: BASE
         , paths: {

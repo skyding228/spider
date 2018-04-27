@@ -82,7 +82,7 @@ define('app', ['base'], function () {
         });
     };
 
-    app.constant('VIEWS_BASE_PATH', '/public/views');
+    app.constant('VIEWS_BASE_PATH', 'public/views');
     app.config(function ($stateProvider, VIEWS_BASE_PATH, $controllerProvider, $filterProvider, $requireProvider, $urlRouterProvider, $provide) {
         app.register = {
             controller: $controllerProvider.register,
@@ -208,6 +208,7 @@ define('init', ['app'], function (app) {
 
         $rootScope.TOKEN_PARAM = '&_token' + '=' + getCookie("_token");
         $rootScope.user = JSON.parse(getCookie('user'));
+
         //$rootScope.user.logout_url = getCookie('logout_url');
         //滚动到底部事件
         ScrollBottom($timeout, function () {

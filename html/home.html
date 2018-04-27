@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Spider</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/node_modules/adminlte/dist/css/AdminLTE.min.css"/>
-    <link rel="stylesheet" href="/node_modules/adminlte/dist/css/skins/skin-blue.min.css"/>
-    <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="/public/css/hack.css"/>
-    <link rel="stylesheet" href="/public/css/select2.css"/>
-    <link rel="stylesheet" href="/public/css/select2-bootstrap.css"/>
-    <link rel="shortcut icon" href="/public/imgs/spider.png"
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="node_modules/adminlte/dist/css/AdminLTE.min.css"/>
+    <link rel="stylesheet" href="node_modules/adminlte/dist/css/skins/skin-blue.min.css"/>
+    <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="public/css/hack.css"/>
+    <link rel="stylesheet" href="public/css/select2.css"/>
+    <link rel="stylesheet" href="public/css/select2-bootstrap.css"/>
+    <link rel="shortcut icon" href="public/imgs/spider.png"
           type="image/x-icon"/>
 
 </head>
@@ -20,7 +20,7 @@
 
 <header class="main-header">
     <a class="logo">
-        <img src="/public/imgs/favicon.png" style="padding-bottom: 5px;"> Spider
+        <img src="public/imgs/favicon.png" style="padding-bottom: 5px;"> Spider
     </a>
     <nav class="navbar navbar-static-top" role="navigation">
         <!-- 菜单 -->
@@ -32,10 +32,10 @@
                 <a href="#/apps" ng-class="menuClass('#/apps');">应用</a>
             </li>
             <li class="dropdown messages-menu ">
-                <a href="/spiderweb-node" target="_blank">控制台</a>
+                <a href="spiderweb-node" target="_blank">控制台</a>
             </li>
             <li class="dropdown messages-menu ">
-                <a href="/public/manual/manual.htm" target="_blank">使用说明</a>
+                <a href="public/manual/manual.htm" target="_blank">使用说明</a>
             </li>
 
             <!--<li class="dropdown messages-menu ">-->
@@ -63,16 +63,16 @@
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
                 <li class="dropdown user user-menu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><img
-                        src="/public/imgs/user2-160x160.jpg" class="user-image" alt="User Image">
+                        src="public/imgs/user2-160x160.jpg" class="user-image" alt="User Image">
                     <span>{{user.name}}</span></a>
                     <ul class="dropdown-menu">
-                        <li class="user-header"><img src="/public/imgs/user2-160x160.jpg" class="img-circle"
+                        <li class="user-header"><img src="public/imgs/user2-160x160.jpg" class="img-circle"
                                                      alt="User Image">
 
                             <p class="ng-binding">{{user.name}}</p></li>
                         <li class="user-footer">
                             <!--href="{{user.logout_url}}" 后端访问不了退出地址-->
-                            <div class="pull-right"><a href="/logout"
+                            <div class="pull-right"><a href="logout"
                                                        class="btn btn-danger btn-flat"><i
                                     class="fa fa-sign-out"></i>退出</a></div>
                         </li>
@@ -89,7 +89,7 @@
         <div ui-view>
             <div class="row" style="padding-top: 100px;">
                 <div class="col-xs-4 col-xs-offset-4">
-                    <img src="/public/imgs/loading.gif">
+                    <img src="public/imgs/loading.gif">
                 </div>
             </div>
             <div class="row">
@@ -114,7 +114,7 @@
     </div>
 </div>
 </body>
-<script type="text/javascript" src="/public/lib/js/require.min.js"></script>
-<script type="text/javascript" src="/public/lib/js/require-config.js"></script>
-<script type="text/javascript" src="/public/js/app.js"></script>
+<script type="text/javascript" src="public/lib/js/require.min.js"></script>
+<script type="text/javascript" src="public/lib/js/require-config.js"></script>
+<script type="text/javascript" src="public/js/app.js"></script>
 </html>
