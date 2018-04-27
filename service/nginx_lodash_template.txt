@@ -13,7 +13,7 @@ server {
 <% _.forEach(hosts, function(host) { %>
     <% if(!host.master) { %>
         location /<%=host.name%>/{
-            proxy_pass <%= host.url %>/;
+            proxy_pass <%= host.intraUrl %>/;
         }
     <% } %>
 <% }); %>
