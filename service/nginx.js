@@ -49,10 +49,6 @@ function start(cb) {
     });
 }
 function assignUrl(baseUrl, host) {
-    // only exec on master
-    if (!USE_NGINX) {
-        return;
-    }
     if (host.master) {
         return;
     }
