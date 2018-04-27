@@ -337,6 +337,7 @@ function changeToDir() {
 }
 function runFakeTerminal() {
     if (term._initialized) {
+        term.write('\r\n terminal closed!');
         return;
     }
 
