@@ -77,7 +77,6 @@ function getHosts() {
     return _.valuesIn(hosts);
 }
 
-
 module.exports = {
     addHost: addHost,
     addHosts: addHosts,

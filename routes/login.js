@@ -18,7 +18,7 @@ var sessions = require('../service/sessions');
 var users = require('../service/users');
 var path = require('path');
 var hosts = require('../service/hosts');
-var files = require('../service/files');
+var urls = require('../service/utils').urls;
 
 router.get('/verifyToken', function (req, res) {
     res.end(sessions.verifyToken(req) ? 'yes' : 'no');
@@ -26,19 +26,19 @@ router.get('/verifyToken', function (req, res) {
 
 router.get('/login', function (req, res, next) {
     if (!hosts.isMaster()) {
-        res.redirect(files.resoleUri(hosts.getMaster(), 'login'));
+        res.redirect(urls.resoleUri(hosts.getMaster(), 'login'));
         return;
     }
     res.sendFile(path.resolve(__dirname, '../html/login.html'));
 });
 router.get('/logout', function (req, res, next) {
     if (!hosts.isMaster()) {
-        res.redirect(files.resoleUri(hosts.getMaster(), 'logout'));
+        res.redirect(urls.resoleUri(hosts.getMaster(), 'logout'));
         return;
     }
     res.clearCookie(sessions.tokenKey);
     sessions.removeToken(req);
-    res.redirect('/login');
+    res.redirect(addBaseUrl('/login'));
 });
 
 router.post('/login', function (req, res, next) {
@@ -48,11 +48,16 @@ router.post('/login', function (req, res, next) {
         res.cookie(sessions.tokenKey, token, {maxAge: 1000 * 60 * 60 * 24 * 365});
         res.cookie('user', JSON.stringify({name: req.body.name}));
         sessions.getSession(token).userName = req.body.name;
-        res.redirect('/');
+        res.redirect(addBaseUrl('/'));
     } else {
-        res.redirect('/login?_error=' + error);
+        res.redirect(addBaseUrl('/login?_error=' + error));
     }
 });
 
+
+function addBaseUrl(relativeUrl){
+    var baseUrl = hosts.getMaster();
+    return urls.resoleUri(baseUrl,relativeUrl);
+}
 
 module.exports = router;
