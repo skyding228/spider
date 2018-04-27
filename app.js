@@ -123,6 +123,7 @@ var port = 3000,
 
 if(nginx.USE_NGINX){
     port = 3001;
+    nginx.reload();
 }
 
 console.original('listening to ' + hosts.getLocal().url);
