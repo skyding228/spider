@@ -36,9 +36,10 @@ function reload(hosts) {
     });
 }
 
-function start() {
+function start(cb) {
     Exec('service nginx start', function (err, stdout, stderr) {
         console.log('start nginx',err, stdout, stderr);
+        cb(err, stdout, stderr);
     });
 }
 function assignUrl(baseUrl,host) {
