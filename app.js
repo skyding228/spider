@@ -11,6 +11,7 @@ var env = process.env;
 var login = require('./routes/login');
 var sessions = require('./service/sessions');
 var console = require('./service/console');
+var hosts = require('./service/hosts');
 
 var terminals = {},
     logs = {};
@@ -43,7 +44,7 @@ app.use('/ws', websockets);
 app.post('/terminals', function (req, res) {
     var cols = parseInt(req.query.cols),
         rows = parseInt(req.query.rows),
-        term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c','su node'], {
+        term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c', 'su node'], {
             encoding: null,
             name: 'xterm-color',
             cols: cols || 80,
@@ -119,5 +120,5 @@ app.use(function (err, req, res, next) {
 var port = 3000,
     host = '0.0.0.0';
 
-console.original('App listening to http://' + (env.IP || host ) + ':' + (env.PORT || port));
+console.original('listening to ' + hosts.getLocal().url);
 app.listen(port, host);
