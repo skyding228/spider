@@ -11,13 +11,7 @@
  * @name            Role
  * @description
  */
-module.exports = {
-    USE_NGINX:USE_NGINX,
-    assignUrl: assignUrl,
-    reload: reload
-};
 
-var Hosts = require('./hosts');
 var urls = require('./utils').urls;
 var Path = require('path');
 var Fs = require('fs');
@@ -36,18 +30,17 @@ function makeConfigFile(hosts) {
 }
 
 function reload(hosts) {
-    makeConfigFile();
+    makeConfigFile(hosts);
     Exec('nginx -s reload', function (err, stdout, stderr) {
         console.log(err, stdout, stderr);
     });
 }
 
-function assignUrl(host) {
+function assignUrl(baseUrl,host) {
     // only exec on master
-    if (!USE_NGINX || !Hosts.isMaster()) {
+    if (!USE_NGINX ) {
         return;
     }
-    var baseUrl = Hosts.getMaster();
     if (host.master) {
         return;
     }
@@ -59,3 +52,9 @@ function assignUrl(host) {
 if (module === require.main) {
     makeConfigFile();
 }
+
+module.exports = {
+    USE_NGINX:USE_NGINX,
+    assignUrl: assignUrl,
+    reload: reload
+};
