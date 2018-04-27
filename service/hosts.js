@@ -15,6 +15,7 @@
 var hosts = {};
 var env = process.env;
 var console = require('./console');
+var urls = require('./utils').urls;
 
 //env.MASTER = 'http://localhost:3000';
 //env.IP = '10.5.16.5';
@@ -26,10 +27,9 @@ var _ = require('lodash');
 var config = require('./configuration');
 
 function localhost() {
-    var PUBLIC_IP = env.PUBLIC_IP || env.IP;
     var local = {};
     local.intraUrl = 'http://' + env.IP + ':' + env.PORT;
-    local.url = 'http://' + PUBLIC_IP + ':' + env.PORT;
+    local.url = urls.removeLastSlash(env.PUBLIC_URL) || local.intraUrl;
     local.name = env.HOSTNAME || 'localhost';
     if (!master) {
         local.master = 1;
@@ -77,7 +77,7 @@ function getHosts() {
 
 module.exports = {
     addHost: addHost,
-    addHosts:addHosts,
+    addHosts: addHosts,
     getMaster: getMaster,
     getLocal: getLocal,
     getHosts: getHosts,

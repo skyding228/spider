@@ -28,16 +28,16 @@ function loginFilter(req, res, next) {
         next();
         return;
     }
+    var loginUrl = files.resoleUri(hosts.getMaster(), 'login');
     if (hosts.isMaster()) {
         if (!verifyToken(req)) {
-            res.redirect('/login');
+            res.redirect(loginUrl);
             return;
         } else {
             next();
         }
         return;
     }
-    var loginUrl = files.resoleUri(hosts.getMaster(), 'login');
     toVerifyTokenOnMaster(req, function(){
         res.cookie(TOKEN,getTokenFromReq(req));
         next();
