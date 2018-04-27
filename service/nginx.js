@@ -12,6 +12,7 @@
  * @description
  */
 module.exports = {
+    USE_NGINX:USE_NGINX,
     assignUrl: assignUrl,
     reload: reload
 };

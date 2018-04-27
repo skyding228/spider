@@ -12,6 +12,7 @@ var login = require('./routes/login');
 var sessions = require('./service/sessions');
 var console = require('./service/console');
 var hosts = require('./service/hosts');
+var nginx = require('./service/nginx');
 
 var terminals = {},
     logs = {};
@@ -119,6 +120,10 @@ app.use(function (err, req, res, next) {
 
 var port = 3000,
     host = '0.0.0.0';
+
+if(nginx.USE_NGINX){
+    port = 3001;
+}
 
 console.original('listening to ' + hosts.getLocal().url);
 app.listen(port, host);
