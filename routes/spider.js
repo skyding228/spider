@@ -19,7 +19,7 @@ router.get('/hosts', function (req, res, next) {
 router.post('/collect', function (req, res, next) {
     hosts.addHost(req.body.host);
     var newFiles = files.addFiles(req.body.files, req.body.host);
-    console.log('receive ' + req.body.files.length + 'files from ', req.body.host, newFiles.length + ' is new files');
+    console.log('receive ' + req.body.files.length + ' files from ', req.body.host, newFiles.length + ' is new files');
     res.json(hosts.getHosts());
 });
 
