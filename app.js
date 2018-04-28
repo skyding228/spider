@@ -121,7 +121,7 @@ app.use(function (err, req, res, next) {
 var port = 3000,
     host = '0.0.0.0';
 
-if(hosts.isMaster() && nginx.useNginx()){
+if(nginx.useNginx()){
     console.original('use nginx...');
     port = 3001;
     nginx.start(function(){
