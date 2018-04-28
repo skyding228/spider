@@ -48,7 +48,6 @@ function isMaster() {
 
 function addHost(host) {
     host.updateAt = new Date().getTime();
-    updateMaster(host);
     if(isMaster()){
         nginx.assignUrl(getMaster(),host);
     }
@@ -60,12 +59,6 @@ function addHost(host) {
     hosts[host.url] = host;
     if(is_new){
         nginx.reload(getHosts());
-    }
-}
-
-function updateMaster(host){
-    if (host.master) {
-        master = host.url;
     }
 }
 
