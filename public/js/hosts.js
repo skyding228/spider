@@ -5,11 +5,9 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     $scope.hosts = [];
     $scope.tags = {};
     $scope.tagHost = '';
-    $scope.loading = false;
-    $scope.loadingAll = 0;
+    $scope.loading = 0;
     $scope.tagTxt = '';
     $scope.showTagTxt = false;
-    $scope.duplicateTags = [];
 
     function loadHosts() {
         $myhttp.get('spider/hosts', function (data) {
@@ -34,9 +32,9 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
 
 
     function loadTags(host) {
+        $scope.tagTxt = '';
         $scope.tags = {};
-        $scope.duplicateTags = [];
-        $scope.loading = true;
+        $scope.loading = 1;
         $scope.tagHost = host.name;
         doLoad(host);
     }
@@ -48,8 +46,7 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
         }
 
         $myhttp.get(url, function (data) {
-            $scope.loading = false;
-            $scope.loadingAll--;
+            $scope.loading --;
             try {
                 if (!Array.isArray(data)) {
                     data = JSON.parse(data);
@@ -62,9 +59,9 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     }
 
     function loadAllTags() {
-        $scope.duplicateTags = [];
+        $scope.tagTxt = '';
         $scope.tagHost = '全部(已去重)';
-        $scope.loadingAll = $scope.hosts.length;
+        $scope.loading = $scope.hosts.length;
         $scope.tags = {};
         $scope.hosts.forEach(host => {
             doLoad(host);
