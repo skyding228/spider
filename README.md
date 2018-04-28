@@ -25,11 +25,12 @@ Spider/ˈspaɪdər/ ，蜘蛛。憧憬它可以像蜘蛛一样，把所有的主
 - IP
 节点间交互的IP，默认使用`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v 172.17| grep -v inet6 | awk '{print $2}' | tr -d "addr:"`获取，如果有多个公网IP时可以明确指定
 
-- PUBLIC_IP
-如果访问端无法访问IP字段指定的地址，可以通过PUBLIC_IP指定公网地址，默认与IP值相同,可不配置。
-
 - LOG_DIR
 想要对外提供访问的宿主机上的目录,默认`/opt/logs`
+
+
+- PUBLIC_URL
+如果配置了NGINX外部访问地址，需要在Master节点指定。否则不需要。
 
 - USERS_FILE
 只有主节点需要指定,保存用户登录信息的文件完整路径;文件内容为每行单个用户数据`name|password(32位的MD5加密的小写字符串)`;以下是默认信息:
@@ -37,7 +38,8 @@ Spider/ˈspaɪdər/ ，蜘蛛。憧憬它可以像蜘蛛一样，把所有的主
 # name | password
 spider|f1a81d782dea6a19bdca383bffe68452
 ```
-
+- DEBUG
+打印更多详细日志,默认DEBUG=false.
 
 # 如何对外提供多个目录访问？
 把想要对外提供访问的目录挂载到容器的`/opt/logs`目录下，修改`spider.sh`;

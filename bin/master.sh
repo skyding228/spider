@@ -1,21 +1,14 @@
 #!/bin/bash
-
-# 只需要在Master节点配置
-USERS_FILE=/opt/spider/users   # 保存用户信息的文件位置
-# PUBLIC_URL= http://log.tc.mybank.cn # 如果配置了nginx,需要配置此项
-# master end ---------------------
-
-# agent start --------------------
-MASTER= #http://172.17.10.5:3000
-# agent end ----------------------
-
 PORT=3000
 HOSTNAME=`hostname`
 LOG_DIR=/opt/logs
 IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v 172.17| grep -v inet6 | awk '{print $2}' | tr -d "addr:"`
-
+USERS_FILE=/opt/spider/users   # 保存用户信息的文件位置
+# PUBLIC_URL= http://log.tc.mybank.cn # 如果配置了nginx,需要配置此项
 DEBUG=false
-CONTAINER_NAME=spider
+
+# 下面的通常没必要修改
+CONTAINER_NAME=spider-master
 OPTIONS=" -v "$LOG_DIR":/opt/logs:ro"
 OPTIONS=$OPTIONS" -v /opt/applications:/opt/spider/applications:ro "
 if [ $USERS_FILE ];then
