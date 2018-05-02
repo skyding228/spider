@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# sed -i 's/\r$//' filename
 # 只需要在Master节点配置
 USERS_FILE=/opt/spider/users   # 保存用户信息的文件位置
 # PUBLIC_URL= http://log.tc.mybank.cn # 如果配置了nginx,需要配置此项
