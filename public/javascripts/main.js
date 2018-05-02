@@ -6,6 +6,13 @@ var term,
     socket,
     pid;
 
+var NodeName = getQueryString('node') || 'spiderweb', CurrentStatus = null;
+var Status = {
+    connected: {favicon: 'green24.png', name: 'connected'},
+    closed: {favicon: 'red24.png', name: 'closed'},
+    message: {favicon: 'blue24.png', name: 'message'}
+};
+
 Terminal.applyAddon(fit);
 Terminal.applyAddon(attach);
 Terminal.applyAddon(zmodem);
@@ -50,13 +57,13 @@ function createTerminal() {
             rows = size.rows,
             url = 'terminals/' + pid + '/size?cols=' + cols + '&rows=' + rows;
 
-        fetch(url, {method: 'POST',credentials: 'include'});
+        fetch(url, {method: 'POST', credentials: 'include'});
     });
     protocol = (location.protocol === 'https:') ? 'wss://' : 'ws://';
     var path = location.pathname;
-    if(path){
-        path = path.substring(0,path.lastIndexOf('/'));
-    }else {
+    if (path) {
+        path = path.substring(0, path.lastIndexOf('/'));
+    } else {
         path = '';
     }
     socketURL = protocol + location.hostname + ((location.port) ? (':' + location.port) : '') + path + '/terminals/';
@@ -72,7 +79,10 @@ function createTerminal() {
         // Set terminal size again to set the specific dimensions on the demo
         setTerminalSize();
 
-        fetch('terminals?cols=' + term.cols + '&rows=' + term.rows, {method: 'POST',credentials: 'include'}).then(function (res) {
+        fetch('terminals?cols=' + term.cols + '&rows=' + term.rows, {
+            method: 'POST',
+            credentials: 'include'
+        }).then(function (res) {
 
             res.text().then(function (pid) {
                 window.pid = pid;
@@ -297,19 +307,16 @@ function _handle_send_session(zsession) {
 //This is here to allow canceling of an in-progress ZMODEM transfer.
 var current_receive_xfer;
 
-//Called from HTML directly.
-function skip_current_file() {
-    current_receive_xfer.skip();
-
-    skipper_button.disabled = true;
-    skipper_button.textContent = "Waiting for server to acknowledge skip …";
-}
 
 function runRealTerminal() {
     term.attach(socket);
+    term.on('data', function (d) {
 
+        changeStatus(Status.message.name);
+    });
     term._initialized = true;
-    setTimeout(changeToDir,300);
+    changeStatus(Status.connected.name);
+    setTimeout(changeToDir, 300);
 }
 
 function changeToDir() {
@@ -330,7 +337,7 @@ function changeToDir() {
         });
         dir && term.send('cd ' + dir + ' \n');
         file && term.send('tail -f ' + file + ' \n');
-    }else{
+    } else {
         term.send('cd /opt/logs \n');
     }
 
@@ -338,6 +345,7 @@ function changeToDir() {
 function runFakeTerminal() {
     if (term._initialized) {
         term.write('\r\n terminal closed!');
+        changeStatus(Status.closed.name);
         return;
     }
 
@@ -375,4 +383,28 @@ function runFakeTerminal() {
     term.on('paste', function (data, ev) {
         term.write(data);
     });
+}
+
+
+function changeStatus(status) {
+    if (status === CurrentStatus) {
+        return;
+    }
+    if (!Status[status]) {
+        return;
+    }
+    status = Status[status];
+    var $favicon = document.getElementById('favicon');
+    $favicon.href = 'public/imgs/' + status.favicon;
+    document.title = NodeName + '-' + status.name;
+}
+
+function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", 'i'); // 匹配目标参数
+    var result = window.location.search.substr(1).match(reg);  // 对querystring匹配目标参数
+    if (result != null) {
+        return decodeURIComponent(result[2]);
+    } else {
+        return null;
+    }
 }

@@ -15,7 +15,7 @@
                         <tbody>
                         <tr ng-repeat="host in hosts">
                             <td style="width: 50px;">{{$index + 1}}</td>
-                            <td><a target="_blank" href="{{host.home}}">{{host.name}}</a></td>
+                            <td><a target="_blank" href="{{host.home+'&node='+host.name}}">{{host.name}}</a></td>
                             <td style="width: 60px;"><a target="_blank" href="{{host.masterUrl}}"
                                                         ng-show="{{host.master}}" class="badge bg-blue">主节点</a>
                             </td>

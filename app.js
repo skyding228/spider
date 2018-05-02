@@ -88,17 +88,27 @@ app.ws('/terminals/:pid', function (ws, req) {
             // The WebSocket is not open, ignore
         }
     });
+
     ws.on('message', function (msg) {
         term.write(msg);
     });
-    ws.on('close', function () {
-        term.kill();
-        console.log('Closed terminal ' + term.pid);
-        // Clean things up
-        delete terminals[term.pid];
-        delete logs[term.pid];
-    });
+    function close() {
+        closeTerm(term,ws);
+    }
+
+    term.on('close', close);
+    ws.on('close', close);
 });
+
+function closeTerm(term,ws) {
+    console.log('Closed terminal ' + term.pid);
+    ws.close();
+    term.kill();
+
+    // Clean things up
+    delete terminals[term.pid];
+    delete logs[term.pid];
+}
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -121,10 +131,10 @@ app.use(function (err, req, res, next) {
 var port = 3000,
     host = '0.0.0.0';
 
-if(nginx.useNginx()){
+if (nginx.useNginx()) {
     console.original('use nginx...');
     port = 3001;
-    nginx.start(function(){
+    nginx.start(function () {
         nginx.reload(hosts.getHosts());
     });
 }
