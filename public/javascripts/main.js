@@ -12,6 +12,8 @@ var Status = {
     closed: {favicon: 'red24.png', name: 'closed'},
     message: {favicon: 'blue24.png', name: 'message'}
 };
+var HiddenProp = getHiddenProp();
+var VisEvtName = HiddenProp.replace(/[H|h]idden/, '') + 'visibilitychange';
 
 Terminal.applyAddon(fit);
 Terminal.applyAddon(attach);
@@ -311,8 +313,9 @@ var current_receive_xfer;
 function runRealTerminal() {
     term.attach(socket);
     term.on('data', function (d) {
-
-        changeStatus(Status.message.name);
+        if (document[HiddenProp]) {
+            changeStatus(Status.message.name);
+        }
     });
     term._initialized = true;
     changeStatus(Status.connected.name);
@@ -390,6 +393,7 @@ function changeStatus(status) {
     if (status === CurrentStatus) {
         return;
     }
+    CurrentStatus = status;
     if (!Status[status]) {
         return;
     }
@@ -408,3 +412,23 @@ function getQueryString(name) {
         return null;
     }
 }
+
+function getHiddenProp() {
+    var prefixes = ['webkit', 'moz', 'ms', 'o'];
+    // if 'hidden' is natively supported just return it
+    if ('hidden' in document) return 'hidden';
+    // otherwise loop over all the known prefixes until we find one
+    for (var i = 0; i < prefixes.length; i++) {
+        if ((prefixes[i] + 'Hidden') in document)
+            return prefixes[i] + 'Hidden';
+    }
+    // otherwise it's not supported
+    return null;
+}
+
+document.addEventListener(VisEvtName, function () {
+    if (!document[HiddenProp]) {
+        changeStatus(Status.connected.name);
+    }
+}, false);
+
