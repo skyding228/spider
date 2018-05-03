@@ -18,8 +18,13 @@
     <script src="node_modules/xterm/dist/addons/fit/fit.js"></script>
     <script src="node_modules/xterm/dist/addons/fullscreen/fullscreen.js"></script>
     <script src="node_modules/xterm/dist/addons/search/search.js"></script>
+    <style>
+        .xterm.fullscreen {
+            margin-bottom: 34px;
+        }
+    </style>
 </head>
-<body>
+<body style="margin: 8px;">
 <h1>enter into a spiderweb node from browser !</h1>
 
 <div id="terminal-container"></div>
@@ -67,7 +72,11 @@
     <form id="zm_choose" style="display: none" action="javascript:void(0)">
         <label>Choose file(s): <input id="zm_files" type="file" multiple></label>
     </form>
+
 </div>
 <script src="public/javascripts/main.js" defer></script>
+<div style="position: absolute;z-index: 999; bottom: 0;width: 100%;margin-left: -8px;padding: 6px; height: 34px;background-color:rgb(229,229,229);box-sizing: border-box;">
+    <input id="command" type="text" placeholder="发送命令到所有已打开控制台,回车键发送" style="width: 100%;font-size:14px;padding: 2px; box-sizing: border-box;border: 1px solid #ccc;box-shadow: none;border-radius: 0;">
+</div>
 </body>
 </html>
