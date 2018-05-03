@@ -41,28 +41,10 @@
 
         function err(xhr, status, err) {
             if (xhr.responseText && xhr.responseText.indexOf('redirect:') === 0) {
-                angular.store(STORE.REDIRECT_HREF, window.location.href);
-                window.location.href = resetParamToUrl(xhr.responseText.substring(9), 'returnUrl', window.location.href);
+                window.location.href = xhr.responseText.substring(9);
             }
             alert(xhr.responseText || "请求出错!请检查网络连接，或联系管理员!");
             console.error('$myhttp请求出错', xhr, status, err);
-        }
-
-        function resetParamToUrl(url, name, val) {
-            if (!url) {
-                return url;
-            }
-            var paramStart = url.indexOf('?');
-            if (paramStart === -1) {
-                return url + '?' + name + '=' + val;
-            } else {
-                var params = url.substring(paramStart + 1).split('&');
-                _.remove(params, function (str) {
-                    return str.substring(0, str.indexOf('=')) === name;
-                });
-                params.push(name + "=" + val);
-                return url.substring(0, paramStart + 1) + params.join('&');
-            }
         }
 
         function get() {

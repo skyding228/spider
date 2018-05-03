@@ -57,7 +57,7 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
 
     function loadFilesUseWs() {
         if (!FileWSId) {
-            $.get(window.location.origin + GetRelativePath() + '/ws/new', function (data) {
+            $myhttp.get(window.location.origin + GetRelativePath() + '/ws/new', function (data) {
                 FileWSId = data;
                 loadFilesUseWs();
             });
