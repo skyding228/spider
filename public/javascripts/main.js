@@ -6,7 +6,7 @@ var term,
     socket,
     pid;
 
-var NodeName = getQueryString('node') || 'spiderweb', CurrentStatus = null;
+var NodeName = '<%=hostName%>' || 'spiderweb', CurrentStatus = null;
 var Status = {
     connected: {favicon: 'green24.png', name: 'connected'},
     closed: {favicon: 'red24.png', name: 'closed'},
@@ -160,7 +160,7 @@ function _show_file_info(xfer) {
 
     var xfer_opts = xfer.get_options();
     ["conversion", "management", "transport", "sparse"].forEach((lbl) => {
-        document.getElementById(`zfile_${lbl}`).textContent = xfer_opts[lbl];
+        document.getElementById('zfile_'+lbl).textContent = xfer_opts[lbl];
     });
 
     document.getElementById("zm_file").style.display = "";

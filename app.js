@@ -13,6 +13,7 @@ var sessions = require('./service/sessions');
 var console = require('./service/console');
 var hosts = require('./service/hosts');
 var nginx = require('./service/nginx');
+var Init = require('./service/init');
 
 var terminals = {},
     logs = {};
@@ -138,6 +139,7 @@ if (nginx.useNginx()) {
         nginx.reload(hosts.getHosts());
     });
 }
+Init.init();
 
 console.original('listening to ' + hosts.getLocal().url);
 app.listen(port, host);
