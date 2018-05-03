@@ -31,7 +31,7 @@ function loginFilter(req, res, next) {
     var loginUrl = files.resoleUri(hosts.getMaster(), 'login');
     if (hosts.isMaster()) {
         if (!verifyToken(req)) {
-            res.redirect(loginUrl);
+            redirect(req,res,loginUrl);
             return;
         } else {
             next();
@@ -42,8 +42,16 @@ function loginFilter(req, res, next) {
         res.cookie(TOKEN,getTokenFromReq(req));
         next();
     }, function () {
-        res.redirect(loginUrl);
+        redirect(req,res,loginUrl);
     });
+}
+
+function redirect(req,res,url){
+    if (req.xhr) {
+        res.status(500).send('redirect:' + url);
+    } else {
+        res.redirect(url);
+    }
 }
 
 function removeToken(req) {
