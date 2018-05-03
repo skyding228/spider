@@ -52,7 +52,7 @@ function addHost(host) {
         nginx.assignUrl(getMaster(),host);
     }
     var is_new = false;
-    if(!hosts[host.url]){
+    if(!hosts[host.url] && host.url !== getLocal().url){
         is_new = true;
         //this is a new host
     }
