@@ -23,7 +23,6 @@ var Hosts = require('./hosts');
  */
 function preset(fileRelativePath, value) {
     var file = Path.resolve(__dirname, fileRelativePath);
-    console.log('inited ' + Fs.readFileSync(file));
     var tmpl = _.template(Fs.readFileSync(file));
     var afterSet = tmpl(value);
     Fs.writeFileSync(file, afterSet);
