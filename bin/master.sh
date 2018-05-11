@@ -19,7 +19,7 @@ OPTIONS=$OPTIONS" -e DEBUG="$DEBUG" "
 case "$1" in
     start)
         docker rm -f $CONTAINER_NAME
-        docker run -d -p $PORT:3000 -e PORT=$PORT -e HOSTNAME=$HOSTNAME -e IP=$IP -e MASTER=$MASTER --hostname=$HOSTNAME  $OPTIONS --name $CONTAINER_NAME spider /opt/spider/run.sh
+        docker run -d -p $PORT:3000 -e PORT=$PORT -e HOSTNAME=$HOSTNAME -e IP=$IP -e MASTER=$MASTER --hostname=$HOSTNAME  $OPTIONS --name $CONTAINER_NAME skyding/spider /opt/spider/run.sh
         nohup docker logs -f $CONTAINER_NAME > ${CONTAINER_NAME}.log 2>&1 &
         tail -f ${CONTAINER_NAME}.log
         ;;
