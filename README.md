@@ -6,41 +6,73 @@ Spider/ˈspaɪdər/ ，蜘蛛。憧憬它可以像蜘蛛一样，把所有的主
 
 [详细介绍](Introduction.md)
 
+# 部署
 
-# 构建docker 容器
+## Docker 安装
+- centos 6
+yum install docker-io
+
+- centos 7
+yum install docker-ce
+
+- 启动docker服务
+service docker start
+
+## 构建docker 容器
 `./bin/build.sh`
 
-# 运行
-`./spider.sh start`
-运行之前可以修改对应的参数(spider.sh中):
-- MASTER
-想把目录在哪个节点上访问,http://ip:port,主节点无需配置此属性
+## 启动服务
+通过修改启动脚本`./bin/master.sh`、`./bin/agent.sh`,修改配置参数。
+### 公共参数
 
 - PORT
-默认3000
+监听端口，默认3000
 
 - HOSTNAME
-用于在Master节点上显示的名称，默认使用`hostname`命令获取，可以直接配置为想要显示的名称
+唯一的主机名，默认使用`hostname`命令获取，可配置为固定的名称
 
 - IP
-节点间交互的IP，默认使用`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v 172.17| grep -v inet6 | awk '{print $2}' | tr -d "addr:"`获取，如果有多个公网IP时可以明确指定
+节点机相互访问的IP(不是外部访问IP)，默认使用`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v 172.17| grep -v inet6 | awk '{print $2}' | tr -d "addr:"`获取。
+如果以上命令不能获取唯一值时，可指定固定IP地址。
 
 - LOG_DIR
 想要对外提供访问的宿主机上的目录,默认`/opt/logs`
 
+- DEBUG
+打印更多详细日志,默认false.
 
-- PUBLIC_URL
-如果配置了NGINX外部访问地址，需要在Master节点指定。否则不需要。
+### master 参数
 
 - USERS_FILE
-只有主节点需要指定,保存用户登录信息的文件完整路径;文件内容为每行单个用户数据`name|password(32位的MD5加密的小写字符串)`;以下是默认信息:
+保存用户登录信息的文件完整路径,默认`/opt/spider/users`
+文件内容为每行单个用户数据`name|password(32位的MD5加密的小写字符串)`;
+以下是默认信息:
 ```
 # name | password
 spider|f1a81d782dea6a19bdca383bffe68452
 ```
-- DEBUG
-打印更多详细日志,默认DEBUG=false.
+可以通过在线加密密码后把Md5密文保存在文件中。上面是用户名spider，密码spider。
+
+- PUBLIC_URL
+如果不使用Nginx代理，则无需配置。否则就是Nginx的完整代理地址。
+
+- 启动 
+启动master的节点无需再启动agent
+`./bin/master.sh start`
+
+- 停止
+`./bin/master.sh stop`
+
+### agent 参数
+- MASTER
+指定master的URL,http://ip:port
+
+- 启动
+`./bin/agent.sh start`
+
+- 停止
+`./bin/agent.sh stop`
 
 # 如何对外提供多个目录访问？
-把想要对外提供访问的目录挂载到容器的`/opt/logs`目录下，修改`spider.sh`;
-例如：想要对外提供/opt/web,/opt/java目录，修改`spider.sh`的启动命令,添加`-v /opt/web:/opt/logs/web:ro -v /opt/java:/opt/logs/java:ro`
+把想要对外提供访问的目录挂载到容器的`/opt/logs`目录下，
+例如：想要对外提供/opt/web,/opt/java目录，修改启动脚本OPTIONS参数,添加`-v /opt/web:/opt/logs/web:ro -v /opt/java:/opt/logs/java:ro`
