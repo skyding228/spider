@@ -14,6 +14,7 @@ var console = require('./service/console');
 var hosts = require('./service/hosts');
 var nginx = require('./service/nginx');
 var Init = require('./service/init');
+var appLinks = require('./mesos/appLinks');
 
 var terminals = {},
     logs = {};
@@ -26,8 +27,8 @@ app.set('view engine', 'jade');
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
-app.use(login);
-app.use(sessions.loginFilter);
+//app.use(login);
+//app.use(sessions.loginFilter);
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/html/home.html');
@@ -94,16 +95,16 @@ app.ws('/terminals/:pid', function (ws, req) {
         term.write(msg);
     });
     function close() {
-        closeTerm(term,ws);
+        closeTerm(term, ws);
     }
 
     term.on('close', close);
-    ws.on('close', function(){
+    ws.on('close', function () {
         term.write('exit\n');
     });
 });
 
-function closeTerm(term,ws) {
+function closeTerm(term, ws) {
     console.log('Closed terminal ' + term.pid);
     ws.close();
     term.kill();
@@ -142,6 +143,6 @@ if (nginx.useNginx()) {
     });
 }
 Init.init();
-
+appLinks.init();
 console.original('listening to ' + hosts.getLocal().url);
 app.listen(port, host);
