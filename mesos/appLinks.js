@@ -14,7 +14,7 @@
 var fs = require('fs');
 var urls = require('../service/utils').urls;
 var Exec = require('child_process').exec;
-var console = require('./console');
+var console = require('../service/console');
 
 var ABSOLUTE_ROOT_DIR = '/singularity/executors';
 var LINK_ROOT_DIR = '/opt/';
