@@ -318,6 +318,9 @@ var current_receive_xfer;
 function runRealTerminal() {
     term.attach(socket);
     term.on('data', function (d) {
+        if(HeartBeatMsg === d){
+            return;
+        }
         LastCommunicateTime = Clock.getTime();
         if (document[HiddenProp]) {
             changeStatus(Status.message.name);
