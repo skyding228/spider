@@ -22,7 +22,7 @@ var LOG_ROOT_DIR = config.root_dir;
 var ContainerIdFile = 'containerId';
 
 function linkDir(dir) {
-    var cmd = 'docker exec -it ' + dir + ' bash -c "echo \\$ENV_INFO \\$INSTANCE_NAME \\$TASK_ID"';
+    var cmd = 'docker exec -i ' + dir + ' bash -c "echo \$ENV_INFO \$INSTANCE_NAME \$TASK_ID"';
     Exec(cmd, function (err, stdout, stderr) {
         console.log(cmd, err, stdout, stderr);
         if (err || !stdout) {
