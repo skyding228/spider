@@ -23,12 +23,15 @@ var LINK_ROOT_DIR = '/opt/';
 
 function listDir(path) {
     var dirs = [];
+    if (!fs.existsSync(path)) {
+        return dirs;
+    }
     var files = fs.readdirSync(path);//需要用到同步读取
     files.forEach(walk);
     function walk(file) {
         var absolutePath = path + '/' + file;
         if (!fs.existsSync(absolutePath)) {
-            return;
+            return dirs;
         }
         var states = fs.statSync(absolutePath);
         if (states.isDirectory()) {
