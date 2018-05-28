@@ -30,11 +30,7 @@ function listDir(path) {
         }
         var states = fs.statSync(absolutePath);
         if (states.isDirectory()) {
-            //创建一个对象保存信息
-            var obj = {};
-            obj.shortName = file; //文件名
-            obj.path = path + '/' + file; //文件绝对路径
-            dirs.push(obj);
+            dirs.push(file);
         }
     }
 
@@ -52,7 +48,7 @@ function linkDir(dir) {
     for (var i = 0; i < runsDir.length; i++) {
         if (runsDir[i] !== 'latest') {
             absolute = urls.resoleUri(absolute, runsDir[i]);
-            return;
+            break;
         }
     }
     if (!fs.existsSync(absolute)) {

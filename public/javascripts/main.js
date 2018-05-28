@@ -15,7 +15,7 @@ var Status = {
 var HiddenProp = getHiddenProp();
 var VisEvtName = HiddenProp.replace(/[H|h]idden/, '') + 'visibilitychange';
 var StorageEvtName = '_all_terminal_cmd';
-if(!HiddenProp || !VisEvtName || !window.localStorage){
+if (!HiddenProp || !VisEvtName || !window.localStorage) {
     alert('部分特性此浏览器不支持,影响体验,推荐使用Chrome浏览器!');
 }
 
@@ -164,7 +164,7 @@ function _show_file_info(xfer) {
 
     var xfer_opts = xfer.get_options();
     ["conversion", "management", "transport", "sparse"].forEach((lbl) => {
-        document.getElementById('zfile_'+lbl).textContent = xfer_opts[lbl];
+        document.getElementById('zfile_' + lbl).textContent = xfer_opts[lbl];
     });
 
     document.getElementById("zm_file").style.display = "";
@@ -327,27 +327,17 @@ function runRealTerminal() {
 }
 
 function changeToDir() {
-    var search = location.search;
-    if (search && search.indexOf('path') !== -1) {
-        var params = search.split('&');
-        var dir, file;
-        params.forEach(param=> {
-            var index = param.indexOf('path=');
-            if (index !== -1) {
-                var path = param.substring(index + 5);
-                index = path.lastIndexOf('/');
-                if (index !== -1) {
-                    dir = path.substring(0, index);
-                }
-                file = path.substring(path.lastIndexOf('/') + 1);
-            }
-        });
-        dir && term.send('cd ' + dir + ' \n');
-        file && term.send('tail -f ' + file + ' \n');
-    } else {
-        term.send('cd /opt/logs \n');
+    var dir = getQueryString('dir'), file = getQueryString('file');
+    if (!dir) {
+        var path = getQueryString('path');
+        var index = path.lastIndexOf('/');
+        if (index !== -1) {
+            dir = path.substring(0, index);
+        }
+        file = path.substring(path.lastIndexOf('/') + 1);
     }
-
+    dir && term.send('cd ' + dir + ' \n');
+    file && term.send('tail -f ' + file + ' \n');
 }
 function runFakeTerminal() {
     if (term._initialized) {
@@ -392,11 +382,11 @@ function runFakeTerminal() {
     });
 }
 
-function isTerminalClosed(){
+function isTerminalClosed() {
     return CurrentStatus === Status.closed.name;
 }
 function changeStatus(status) {
-    if(isTerminalClosed()){
+    if (isTerminalClosed()) {
         return;
     }
     if (status === CurrentStatus) {
@@ -441,19 +431,19 @@ document.addEventListener(VisEvtName, function () {
     }
 }, false);
 var $command = document.getElementById('command');
-$command.onkeypress = function(event){
+$command.onkeypress = function (event) {
     if (event.keyCode === 13) {
-        var cmd = $command.value+'\n';
-        localStorage.setItem(StorageEvtName,cmd);
+        var cmd = $command.value + '\n';
+        localStorage.setItem(StorageEvtName, cmd);
         $command.value = '';
         // the source terminal can not receive the storage changed event
         term.send(cmd);
         localStorage.removeItem(StorageEvtName);
     }
 };
-window.addEventListener('storage',function(event){
-    if(event.newValue && StorageEvtName === event.key){
-        console.log(event.key,event.newValue);
+window.addEventListener('storage', function (event) {
+    if (event.newValue && StorageEvtName === event.key) {
+        console.log(event.key, event.newValue);
         term.send(event.newValue);
     }
 });
