@@ -17,7 +17,7 @@ var config = require('../service/configuration');
 var Exec = require('child_process').exec;
 var appLinks = require('./appLinks');
 
-var DOCKER_ROOT_DIR = urls.resoleUri(config.docker_root_dir, 'devicemapper/mnt/');
+var DOCKER_ROOT_DIR = urls.resoleUri(config.docker_root_dir, 'containers');
 var LOG_ROOT_DIR = config.root_dir;
 var ContainerIdFile = 'containerId';
 
@@ -89,6 +89,10 @@ function removeLink(link) {
 function init() {
     initLinks();
     appLinks.watchNewDirs(DOCKER_ROOT_DIR, linkDir);
+}
+
+if (require.main === module) {
+    init();
 }
 
 module.exports = {
