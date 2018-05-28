@@ -16,7 +16,9 @@ var urls = require('../service/utils').urls;
 var Exec = require('child_process').exec;
 var console = require('../service/console');
 
-var ABSOLUTE_ROOT_DIR = '/singularity/executors';
+var config = require('../service/configuration');
+
+var ABSOLUTE_ROOT_DIR = urls.resoleUri(config.singularity_root_dir,'executors/') ;
 var LINK_ROOT_DIR = '/opt/';
 
 function listDir(path) {
@@ -37,12 +39,10 @@ function listDir(path) {
     return dirs;
 }
 
-
-function linkDir(dir) {
-    var link = urls.resoleUri(LINK_ROOT_DIR, dir);
+function getAbsoluteDir(dir){
     var absolute = urls.resoleUri(urls.resoleUri(ABSOLUTE_ROOT_DIR, dir), 'runs');
     if (!fs.existsSync(absolute)) {
-        return;
+        return null;
     }
     var runsDir = listDir(absolute);
     for (var i = 0; i < runsDir.length; i++) {
@@ -52,11 +52,18 @@ function linkDir(dir) {
         }
     }
     if (!fs.existsSync(absolute)) {
-        return;
+        return null;
     }
-    execLn(absolute, link);
+    return absolute;
 }
 
+function linkDir(dir) {
+    var link = urls.resoleUri(LINK_ROOT_DIR, dir);
+    var absolute = getAbsoluteDir(dir);
+    if(absolute){
+        execLn(absolute, link);
+    }
+}
 
 function execLn(absolute, link) {
     var cmd = 'ln -s ' + absolute + ' ' + link;
@@ -65,10 +72,10 @@ function execLn(absolute, link) {
     });
 }
 
-function watchNewDirs() {
-    fs.watch(ABSOLUTE_ROOT_DIR, {recursive: false}, function (event, dir) {
+function watchNewDirs(dir,callback) {
+    fs.watch(dir, {recursive: false}, function (event, dir) {
         if ('rename' === event) {
-            linkDir(dir);
+            callback(dir);
         }
     });
 }
@@ -82,9 +89,13 @@ function initLinks() {
 
 function init() {
     initLinks();
-    watchNewDirs();
+    watchNewDirs(ABSOLUTE_ROOT_DIR,linkDir);
 }
 
 module.exports = {
-    init: init
+    init: init,
+    getAbsoluteDir:getAbsoluteDir,
+    execLn:execLn,
+    listDir:listDir,
+    watchNewDirs:watchNewDirs
 };

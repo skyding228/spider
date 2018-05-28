@@ -12,8 +12,10 @@
  * @description
  */
 
-var config = {
+module.exports = {
     root_dir: '/opt/logs',
+    singularity_root_dir:'/singularity/',
+    docker_root_dir:'/var/lib/docker/',
     //the period of collect all hosts files,only used in master node
     collect_interval_ms: 180 * 1000,
     //the period of send files to master, only used in agent node
@@ -24,6 +26,3 @@ var config = {
     files_batch_size: 300,
     get_tag_shell_path: '/opt/applications/gettag.sh'
 };
-
-
-module.exports = config;
