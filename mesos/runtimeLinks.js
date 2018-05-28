@@ -15,6 +15,7 @@ var console = require('../service/console');
 var urls = require('../service/utils').urls;
 var config = require('../service/configuration');
 var Exec = require('child_process').exec;
+var ExecSync = require('child_process').execSync;
 var appLinks = require('./appLinks');
 
 var DOCKER_ROOT_DIR = urls.resoleUri(config.docker_root_dir, 'containers');
@@ -28,7 +29,7 @@ function linkDir(container) {
         if (err || !stdout) {
             return;
         }
-        var results = stdout.replace(/\n/g,'').split(/ +/);
+        var results = stdout.replace(/\n/g, '').split(/ +/);
         var func = results[0], app = results[1], dir = results[2];
         if (!func || !app || !dir) {
             return;
@@ -78,11 +79,13 @@ function removeLink(link) {
         return;
     }
     var containerId = new String(fs.readFileSync(containerIdPath));
-    var absoluteContainer = urls.resoleUri(DOCKER_ROOT_DIR,containerId);
+    var absoluteContainer = urls.resoleUri(DOCKER_ROOT_DIR, containerId);
     if (!fs.existsSync(absoluteContainer)) {
-       Exec('rm -f '+absoluteLink,function (err, stdout, stderr) {
-           console.log('remove link '+link, err, stdout, stderr);
-       });
+        try {
+            ExecSync('rm -f ' + absoluteLink);
+        } catch (e) {
+            console.log('remove ' + absoluteLink + ' error', e);
+        }
     }
 }
 
@@ -96,6 +99,6 @@ if (require.main === module) {
 }
 
 module.exports = {
-    init:init,
-    removeInvalidLinks:removeInvalidLinks
+    init: init,
+    removeInvalidLinks: removeInvalidLinks
 };
