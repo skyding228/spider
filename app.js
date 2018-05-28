@@ -15,6 +15,7 @@ var hosts = require('./service/hosts');
 var nginx = require('./service/nginx');
 var Init = require('./service/init');
 var appLinks = require('./mesos/appLinks');
+var runtimeLinks = require('./mesos/runtimeLinks');
 var HeartBeatMsg = '_heart_beat_';
 
 var terminals = {},
@@ -148,5 +149,6 @@ if (nginx.useNginx()) {
 }
 Init.init();
 appLinks.init();
+runtimeLinks.init();
 console.original('listening to ' + hosts.getLocal().url);
 app.listen(port, host);
