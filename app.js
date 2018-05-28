@@ -15,6 +15,7 @@ var hosts = require('./service/hosts');
 var nginx = require('./service/nginx');
 var Init = require('./service/init');
 var appLinks = require('./mesos/appLinks');
+var HeartBeatMsg = '_heart_beat_';
 
 var terminals = {},
     logs = {};
@@ -92,7 +93,10 @@ app.ws('/terminals/:pid', function (ws, req) {
     });
 
     ws.on('message', function (msg) {
-        term.write(msg);
+        //ignore heart beat messages
+        if(HeartBeatMsg !== msg){
+            term.write(msg);
+        }
     });
     function close() {
         closeTerm(term, ws);

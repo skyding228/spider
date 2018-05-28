@@ -6,6 +6,7 @@ var term,
     socket,
     pid;
 
+var Clock = new Date(), LastCommunicateTime = Clock.getTime(), TTL = 1000 * 60 * 30, HeartBeatMsg = '_heart_beat_';
 var NodeName = '<%=hostName%>' || 'spiderweb', CurrentStatus = null;
 var Status = {
     connected: {favicon: 'green24.png', name: 'connected'},
@@ -317,6 +318,7 @@ var current_receive_xfer;
 function runRealTerminal() {
     term.attach(socket);
     term.on('data', function (d) {
+        LastCommunicateTime = Clock.getTime();
         if (document[HiddenProp]) {
             changeStatus(Status.message.name);
         }
@@ -424,7 +426,25 @@ function getHiddenProp() {
     // otherwise it's not supported
     return null;
 }
+function runClock() {
+    var period = 10 * 1000;
+    setInterval(function () {
+        Clock.setTime(Clock.getTime() + period);
+    }, period);
+}
+function heartbeat() {
+    setInterval(function () {
+        var now = Clock.getTime();
+        if (now - LastCommunicateTime < TTL) {
+            term.send(HeartBeatMsg);
+        }
+    }, 30 * 1000);
 
+}
+(function init(){
+    runClock();
+    heartbeat();
+})();
 document.addEventListener(VisEvtName, function () {
     if (!document[HiddenProp]) {
         changeStatus(Status.connected.name);
