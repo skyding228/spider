@@ -21,8 +21,8 @@ var DOCKER_ROOT_DIR = urls.resoleUri(config.docker_root_dir, 'containers');
 var LOG_ROOT_DIR = config.root_dir;
 var ContainerIdFile = 'containerId';
 
-function linkDir(dir) {
-    var cmd = 'docker exec -i ' + dir + ' bash -c "echo \\$ENV_INFO \\$INSTANCE_NAME \\$TASK_ID"';
+function linkDir(container) {
+    var cmd = 'docker exec -i ' + container + ' bash -c "echo \\$ENV_INFO \\$INSTANCE_NAME \\$TASK_ID"';
     Exec(cmd, function (err, stdout, stderr) {
         console.log(cmd, err, stdout, stderr);
         if (err || !stdout) {
@@ -41,7 +41,7 @@ function linkDir(dir) {
                 appLinks.execLn(absolute, link);
             }
         });
-        Exec('echo ' + dir + ' >' + urls.resoleUri(absolute, ContainerIdFile), function (err, stdout, stderr) {
+        Exec('echo ' + container + ' >' + urls.resoleUri(absolute, ContainerIdFile), function (err, stdout, stderr) {
             console.log('create container id file', err, stdout, stderr);
         });
     });
