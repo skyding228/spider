@@ -73,6 +73,9 @@ function listFilesRecursively(path, filesList) {
     var files = fs.readdirSync(path);//需要用到同步读取
     files.forEach(walk);
     function walk(file) {
+        if(file[0] === '.'){
+            return;
+        }
         var absolutePath = path + '/' + file;
         if (!fs.existsSync(absolutePath)) {
             return;
