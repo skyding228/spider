@@ -51,6 +51,7 @@ function linkDir(container) {
 }
 
 function initLinks() {
+    removeExitedContainers();
     var containers = appLinks.listDir(DOCKER_ROOT_DIR);
     containers.forEach(container => {
         linkDir(container);
@@ -81,7 +82,7 @@ function removeLink(link) {
     if (!fs.existsSync(containerIdPath)) {
         return;
     }
-    var containerId = new String(fs.readFileSync(containerIdPath));
+    var containerId = new String(fs.readFileSync(containerIdPath)).replace('\n','');
     var absoluteContainer = urls.resoleUri(DOCKER_ROOT_DIR, containerId);
     if (!fs.existsSync(absoluteContainer)) {
         try {
@@ -102,7 +103,6 @@ function removeExitedContainers() {
 }
 
 function init() {
-    removeExitedContainers();
     initLinks();
     appLinks.watchNewDirs(DOCKER_ROOT_DIR, linkDir);
 }
