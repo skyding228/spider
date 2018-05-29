@@ -69,17 +69,16 @@ function linkDir(dir) {
 }
 
 function execLn(absolute, link) {
-    if (fs.existsSync(link)) {
-        return;
-    }
     var cmd = 'ln -s ' + absolute + ' ' + link;
+    if (fs.existsSync(link)) {
+       cmd = 'rm -rf '+link + ' && '+cmd;
+    }
     Exec(cmd, function (err, stdout, stderr) {
         if (err) {
             console.log(stderr);
         } else {
             console.log(cmd, stdout);
         }
-
     });
 }
 
