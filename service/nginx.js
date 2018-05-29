@@ -91,6 +91,9 @@ function useNginx(flag) {
 function proxyHosts(hosts) {
     var locations = [];
     hosts.forEach(host => {
+        if(host.master){
+            return;
+        }
         locations.push({path: host.name, url: host.intraUrl});
     });
     updateLocations(locations);
