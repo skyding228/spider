@@ -27,7 +27,9 @@ var genLocation = _.template(Fs.readFileSync(Path.resolve(__dirname, 'nginx_loda
 function updateLocations(locations) {
     var hasNewProxy = false;
     locations.forEach(location => {
-        hasNewProxy = hasNewProxy || updateLocation(location.path, location.url);
+        if(updateLocation(location.path, location.url)){
+            hasNewProxy = true;
+        }
     });
     if (hasNewProxy) {
         reload();
