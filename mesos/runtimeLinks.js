@@ -11,6 +11,7 @@
  * @name            Role
  * @description
  */
+var fs = require('fs');
 var console = require('../service/console');
 var urls = require('../service/utils').urls;
 var config = require('../service/configuration');
