@@ -37,10 +37,8 @@ function linkDir(container) {
         var absolute = appLinks.getAbsoluteDir(dir);
         var funcDir = urls.resoleUri(LOG_ROOT_DIR, func);
         Exec('mkdir ' + funcDir, function (err, stdout, stderr) {
-            if (!err) {
-                var link = urls.resoleUri(funcDir, app);
-                appLinks.execLn(absolute, link);
-            }
+            var link = urls.resoleUri(funcDir, app);
+            appLinks.execLn(absolute, link);
         });
         Exec('echo ' + container + ' >' + urls.resoleUri(absolute, ContainerIdFile), function (err, stdout, stderr) {
             console.log('create container id file', err, stdout, stderr);
