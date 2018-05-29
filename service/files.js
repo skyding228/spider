@@ -111,7 +111,7 @@ function addSegmentsAndHost(files, host) {
         if(file.segments.length > 2){
             file.location = {path:file.segments[0]+'.'+file.segments[1],url:host.intraUrl};
         }
-        file.tailUrl = resoleUri(file.location.path, 'spiderweb-node?path=' + resoleUri(config.root_dir, file.path));
+        file.tailUrl = resoleUri(file.location ? file.location.path : host.url, 'spiderweb-node?path=' + resoleUri(config.root_dir, file.path));
         file.downloadUrl = resoleUri(host.url, 'spider/download?path=' + resoleUri(config.root_dir, file.path));
         file.host = host.name;
     });
