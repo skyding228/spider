@@ -58,7 +58,7 @@ function addHost(host) {
     }
     hosts[host.url] = host;
     if(is_new){
-        nginx.reload(getHosts());
+        nginx.proxyHosts([host]);
     }
 }
 

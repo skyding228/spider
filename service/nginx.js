@@ -17,23 +17,44 @@ var Path = require('path');
 var Fs = require('fs');
 var _ = require('lodash'); //https://lodash.com/docs/4.17.5
 var Exec = require('child_process').exec;
+var Locations = {};
 
-var CONFIG_FILE_PATH = Path.resolve('/etc/nginx/conf.d/spider.conf');
+var CONFIG_ROOT_DIR = '/etc/nginx/conf.d/';
 var USE_NGINX = false;
 
-var genConfig = _.template(Fs.readFileSync(Path.resolve(__dirname, 'nginx_lodash_template.txt')));
+var genLocation = _.template(Fs.readFileSync(Path.resolve(__dirname, 'nginx_lodash_template.txt')));
 
-function makeConfigFile(hosts) {
-    var config = genConfig({hosts: hosts});
-    console.log(config);
-    Fs.writeFileSync(CONFIG_FILE_PATH, config);
+function updateLocations(locations) {
+    var hasNewProxy = false;
+    locations.forEach(location => {
+        hasNewProxy = hasNewProxy || updateLocation(location.path, location.url);
+    });
+    if (hasNewProxy) {
+        reload();
+    }
 }
 
-function reload(hosts) {
+function updateLocation(path, url) {
+    if (Locations[path] === url) {
+        return false;
+    }
+    Locations[path] = url;
+    writeConfigFile(path, url);
+    return true;
+}
+
+function writeConfigFile(path, url) {
+    var location = {path: path, url: url};
+    var config = genLocation(location);
+    console.log(config);
+    var filePath = Path.resolve(CONFIG_ROOT_DIR, path + '.conf');
+    Fs.writeFileSync(filePath, config);
+}
+
+function reload() {
     if (!useNginx()) {
         return;
     }
-    makeConfigFile(hosts);
     Exec('nginx -s reload', function (err, stdout, stderr) {
         console.log('reload nginx', err, stdout, stderr);
     });
@@ -48,11 +69,15 @@ function start(cb) {
         cb(err, stdout, stderr);
     });
 }
+/**
+ * change the host URL to nginx location
+ * @param baseUrl
+ * @param host
+ */
 function assignUrl(baseUrl, host) {
     if (host.master) {
         return;
     }
-
     host.url = urls.resoleUri(baseUrl, host.name);
 }
 
@@ -63,13 +88,28 @@ function useNginx(flag) {
     return USE_NGINX;
 }
 
-if (module === require.main) {
-    makeConfigFile();
+function proxyHosts(hosts) {
+    var locations = [];
+    hosts.forEach(host => {
+        locations.push({path: host.name, url: host.intraUrl});
+    });
+    updateLocations(locations);
+}
+
+function proxyFiles(files) {
+    var locations = [];
+    files.forEach(file => {
+        if (file.location) {
+            locations.push(file.location);
+        }
+    });
+    updateLocations(locations);
 }
 
 module.exports = {
     useNginx: useNginx,
     assignUrl: assignUrl,
-    reload: reload,
-    start: start
+    start: start,
+    proxyHosts: proxyHosts,
+    proxyFiles: proxyFiles
 };

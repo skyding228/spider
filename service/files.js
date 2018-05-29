@@ -20,6 +20,8 @@ var request = require('request');
 var console = require('./console');
 var WS = require('../service/ws');
 var utils = require('./utils').urls;
+var runtimeLinks = require('../mesos/runtimeLinks');
+var nginx = require('./nginx');
 
 var PATH = require('path');
 
@@ -102,7 +104,10 @@ function addSegmentsAndHost(files, host) {
             file.path = file.path.substring(config.root_dir.length + 1);
         }
         file.segments = trimSlash(file.path).split('/');
-        file.uri = resoleUri(host.url, file.path);
+        file.uri = file.path;
+        if(file.segments.length > 2){
+            file.location = {path:file.segments[0]+'.'+file.segments[1],url:host.intraUrl};
+        }
         file.tailUrl = resoleUri(host.url, 'spiderweb-node?path=' + resoleUri(config.root_dir, file.path));
         file.downloadUrl = resoleUri(host.url, 'spider/download?path=' + resoleUri(config.root_dir, file.path));
         file.host = host.name;
@@ -143,6 +148,7 @@ function trimSlash(path) {
 
 function getLocalFiles() {
     var fileList = [];
+    runtimeLinks.removeInvalidLinks();
     listFilesRecursively(config.root_dir, fileList);
     return fileList;
 }
@@ -165,6 +171,7 @@ function addFiles(files, host) {
     if (newFiles.length) {
         sendFiles(pickToSend(newFiles));
         WS.sendFilesToAllWS(newFiles);
+        nginx.proxyFiles(newFiles);
     }
     return newFiles;
 }

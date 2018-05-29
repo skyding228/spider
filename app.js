@@ -144,7 +144,7 @@ if (nginx.useNginx()) {
     console.original('use nginx...');
     port = 3001;
     nginx.start(function () {
-        nginx.reload(hosts.getHosts());
+        nginx.proxyHosts(hosts.getHosts());
     });
 }
 Init.init();
