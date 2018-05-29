@@ -13,7 +13,8 @@ RUN apt-get install -y nginx
 RUN rm -f /etc/nginx/nginx.conf
 RUN cp /opt/spider/bin/nginx.conf /etc/nginx/
 RUN rm -f ~/.bashrc
-RUN mv /opt/spider/bin/bashrc ~/.bashrc
+RUN cp /opt/spider/bin/bashrc ~/.bashrc
+RUN cp /opt/spider/bin/bashrc /home/node/.bashrc
 RUN rm -rf /opt/yarn-v1.5.1
 RUN chmod +x /opt/spider/run.sh
 CMD ["/opt/spider/run.sh"]
