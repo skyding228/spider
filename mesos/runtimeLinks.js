@@ -35,7 +35,7 @@ function linkDir(container) {
             return;
         }
         var absolute = appLinks.getAbsoluteDir(dir);
-        if(!absolute){
+        if (!absolute) {
             return;
         }
         var funcDir = urls.resoleUri(LOG_ROOT_DIR, func);
@@ -60,12 +60,13 @@ function initLinks() {
  * remove the links that the containers exited.
  */
 function removeInvalidLinks() {
+    removeExitedContainers();
     var funcs = appLinks.listDir(LOG_ROOT_DIR);
     var links = [];
     funcs.forEach(func => {
         var apps = appLinks.listDir(urls.resoleUri(LOG_ROOT_DIR, func));
         apps.forEach(app => {
-            links.push[func + '/' + app];
+            links.push(func + '/' + app);
         });
     });
     links.forEach(link => {
@@ -90,11 +91,18 @@ function removeLink(link) {
     }
 }
 
+function removeExitedContainers() {
+    try {
+        ExecSync('rm -rf ' + urls.resoleUri(DOCKER_ROOT_DIR, '/*'));
+    } catch (e) {
+        console.log('removeExitedContainers error xxxxxxxxxxxxxxxxxxx ');
+    }
+
+}
+
 function init() {
-    //remove exited containers
-    Exec('rm -rf '+urls.resoleUri(DOCKER_ROOT_DIR,'/*'),function(){
-        initLinks();
-    });
+    removeExitedContainers();
+    initLinks();
     appLinks.watchNewDirs(DOCKER_ROOT_DIR, linkDir);
 }
 
