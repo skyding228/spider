@@ -35,6 +35,9 @@ function linkDir(container) {
             return;
         }
         var absolute = appLinks.getAbsoluteDir(dir);
+        if(!absolute){
+            return;
+        }
         var funcDir = urls.resoleUri(LOG_ROOT_DIR, func);
         Exec('mkdir ' + funcDir, function (err, stdout, stderr) {
             var link = urls.resoleUri(funcDir, app);
@@ -88,7 +91,10 @@ function removeLink(link) {
 }
 
 function init() {
-    initLinks();
+    //remove exited containers
+    Exec('rm -rf '+urls.resoleUri(DOCKER_ROOT_DIR,'/*'),function(){
+        initLinks();
+    });
     appLinks.watchNewDirs(DOCKER_ROOT_DIR, linkDir);
 }
 
