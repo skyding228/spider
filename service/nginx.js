@@ -89,6 +89,9 @@ function useNginx(flag) {
 }
 
 function proxyHosts(hosts) {
+    if (!useNginx()) {
+        return;
+    }
     var locations = [];
     hosts.forEach(host => {
         if(host.master){
@@ -100,6 +103,9 @@ function proxyHosts(hosts) {
 }
 
 function proxyFiles(files) {
+    if (!useNginx()) {
+        return;
+    }
     var locations = [];
     files.forEach(file => {
         if (file.location) {
