@@ -73,8 +73,7 @@ function listFilesRecursively(path, filesList) {
     var files = fs.readdirSync(path);//需要用到同步读取
     files.forEach(walk);
     function walk(file) {
-        // ignore hidden dirs
-        if (file[0] === '.') {
+        if(isExcludeDir(file)){
             return;
         }
         var absolutePath = path + '/' + file;
@@ -98,6 +97,16 @@ function listFilesRecursively(path, filesList) {
     }
 }
 
+function isExcludeDir(dir){
+    if (dir[0] === '.') {
+        return true;
+    }else if (dir === 'docker_tools') {
+        return true;
+    }else if (dir.startsWith('env_conf_')) {
+        return true;
+    }
+    return false;
+}
 
 function isExcludeFile(filename) {
     if (filename.endsWith('.jar') || filename === 'containerId') {
