@@ -33,11 +33,14 @@ app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 //app.use(sessions.loginFilter);
 
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/html/home.html');
+    res.sendFile(__dirname + '/html/index.html');
 });
-
 app.get('/spiderweb-node', function (req, res) {
     res.sendFile(__dirname + '/html/index.html');
+});
+
+app.get('/app', function (req, res) {
+    res.sendFile(__dirname + '/html/home.html');
 });
 
 var spider = require('./routes/spider');
