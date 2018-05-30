@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser');
 var env = process.env;
 var login = require('./routes/login');
 var sessions = require('./service/sessions');
+var config = require('./service/configuration');
 var console = require('./service/console');
 var hosts = require('./service/hosts');
 var nginx = require('./service/nginx');
@@ -17,6 +18,7 @@ var Init = require('./service/init');
 var appLinks = require('./mesos/appLinks');
 var runtimeLinks = require('./mesos/runtimeLinks');
 var HeartBeatMsg = '_heart_beat_';
+
 
 var terminals = {},
     logs = {};
@@ -52,7 +54,7 @@ app.use('/ws', websockets);
 app.post('/terminals', function (req, res) {
     var cols = parseInt(req.query.cols),
         rows = parseInt(req.query.rows),
-        term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c', 'su node'], {
+        term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c', 'su node && cd '+config.root_dir], {
             encoding: null,
             name: 'xterm-color',
             cols: cols || 80,
