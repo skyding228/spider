@@ -32,7 +32,11 @@ function sendFiles(ws, files) {
 
 function send(ws, files) {
     setTimeout(function () {
-        ws.send(JSON.stringify(files));
+        try {
+            ws.send(JSON.stringify(files));
+        }catch (e){
+            console.log('send new files to browser error',e);
+        }
     }, 1);
 }
 
