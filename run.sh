@@ -5,5 +5,5 @@ cd $PWD
 chmod +x init.sh
 ./init.sh
 cd $PWD
-cnpm install
+#cnpm install
 npm run start
