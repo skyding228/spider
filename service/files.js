@@ -73,7 +73,8 @@ function listFilesRecursively(path, filesList) {
     var files = fs.readdirSync(path);//需要用到同步读取
     files.forEach(walk);
     function walk(file) {
-        if(file[0] === '.'){
+        // ignore hidden dirs
+        if (file[0] === '.') {
             return;
         }
         var absolutePath = path + '/' + file;
@@ -84,6 +85,9 @@ function listFilesRecursively(path, filesList) {
         if (states.isDirectory()) {
             listFilesRecursively(path + '/' + file, filesList);
         } else {
+            if (isExcludeFile(file)) {
+                return;
+            }
             //创建一个对象保存信息
             var obj = {};
             obj.size = formatFileSize(states.size);//文件大小，以字节为单位
@@ -92,6 +96,14 @@ function listFilesRecursively(path, filesList) {
             filesList.push(obj);
         }
     }
+}
+
+
+function isExcludeFile(filename) {
+    if (filename.endsWith('.jar') || filename === 'containerId') {
+        return false;
+    }
+    return true;
 }
 
 
@@ -108,8 +120,8 @@ function addSegmentsAndHost(files, host) {
         }
         file.segments = trimSlash(file.path).split('/');
         file.uri = file.path;
-        if(file.segments.length > 2){
-            file.location = {path:file.segments[0]+'.'+file.segments[1],url:host.intraUrl};
+        if (file.segments.length > 2) {
+            file.location = {path: file.segments[0] + '.' + file.segments[1], url: host.intraUrl};
         }
         file.tailUrl = resoleUri(file.location ? file.location.path : host.url, 'spiderweb-node?path=' + resoleUri(config.root_dir, file.path));
         file.downloadUrl = resoleUri(host.url, 'spider/download?path=' + resoleUri(config.root_dir, file.path));
