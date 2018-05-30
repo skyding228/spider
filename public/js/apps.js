@@ -218,7 +218,7 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
             $timeout.cancel(timeout);
         });
         SearchChanges = [];
-        SearchChanges.push($timeout(searchFile, 300));
+        SearchChanges.push($timeout(searchFile, 800));
     }
 
     /**
