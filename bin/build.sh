@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build --no-cache -t skyding/spider .
+docker build --no-cache -t skyding/spider-mesos .
