@@ -54,7 +54,7 @@ app.use('/ws', websockets);
 app.post('/terminals', function (req, res) {
     var cols = parseInt(req.query.cols),
         rows = parseInt(req.query.rows),
-        term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c', 'su node && cd '+config.root_dir], {
+        term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c', 'cd '+config.root_dir+' && su node '], {
             encoding: null,
             name: 'xterm-color',
             cols: cols || 80,
