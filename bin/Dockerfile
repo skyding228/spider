@@ -3,7 +3,7 @@ MAINTAINER ShangHai skyding <1329555958@qq.com>
 
 WORKDIR /opt/logs
 RUN cd / && git clone https://github.com/1329555958/spider.git
-RUN cd /spider && npm install -g cnpm --registry=https://registry.npm.taobao.org
+RUN cd /spider && git checkout mesos && npm install -g cnpm --registry=https://registry.npm.taobao.org
 RUN cd /spider && cnpm install
 RUN apt-get update
 RUN apt-get install -y lrzsz
