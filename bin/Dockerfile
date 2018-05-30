@@ -15,7 +15,7 @@ RUN cp /spider/bin/nginx.conf /etc/nginx/
 RUN rm -f ~/.bashrc
 RUN cp /spider/bin/bashrc ~/.bashrc
 RUN cp /spider/bin/bashrc /home/node/.bashrc
-RUN rm -rf /opt/yarn-v1.5.1
+RUN rm -rf /opt/yarn-*
 RUN chmod +x /spider/run.sh
 RUN echo "root:1qazXSW@vf" | chpasswd
 CMD ["/spider/run.sh"]
