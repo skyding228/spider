@@ -5,10 +5,10 @@ WORKDIR /opt/logs
 RUN apt-get update
 RUN apt-get install -y lrzsz
 RUN apt-get install -y vim
+RUN echo "syntax on" >> /etc/vim/vimrc
 RUN cd / && git clone https://github.com/1329555958/spider.git
 RUN cd /spider && git checkout mesos && npm install -g cnpm --registry=https://registry.npm.taobao.org
 RUN cd /spider && cnpm install
-RUN echo "syntax on" >> /etc/vim/vimrc
 RUN apt-get install -y nginx
 RUN rm -f /etc/nginx/nginx.conf
 RUN cp /spider/bin/nginx.conf /etc/nginx/
