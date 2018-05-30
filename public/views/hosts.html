@@ -5,10 +5,6 @@
             <div class="box  box-primary">
                 <div class="box-header">
                     <h3 class="box-title">Hosts</h3>
-
-                    <div class="box-tools">
-                        <button class="btn btn-success" ng-click="loadAllTags();">All Tags</button>
-                    </div>
                 </div>
                 <div class="box-body no-padding">
                     <table class="table table-striped">
@@ -19,49 +15,9 @@
                             <td style="width: 60px;"><a target="_blank" href="{{host.masterUrl}}"
                                                         ng-show="{{host.master}}" class="badge bg-blue">主节点</a>
                             </td>
-                            <td style="width: 80px;">
-                                <button class="badge bg-green" ng-click="loadTags(host);">&nbsp;Tag&nbsp;</button>
-                            </td>
                         </tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-8">
-            <div class="box  box-success">
-                <div class="box-header">
-                    <h3 class="box-title">Tags<span ng-show="tagHost">-{{tagHost}}</span>
-                        <i ng-show="loading > 0" class="fa fa-spinner fa-spin"></i>
-                    </h3>
-
-                    <div class="box-tools">
-                        <button class="btn btn-primary" ng-show="!showTagTxt" ng-click="changeShowTagTxt(true);">显示原文</button>
-                        <button class="btn btn-primary" ng-show="showTagTxt" ng-click="changeShowTagTxt(false);">显示表格</button>
-                    </div>
-                </div>
-                <!-- /.box-header -->
-                <div ng-show="!showTagTxt" class="box-body table-responsive no-padding">
-                    <table class="table table-hover">
-                        <tbody>
-                        <tr>
-                            <th style="width: 80px;">No.</th>
-                            <th>App</th>
-                            <th>Tag</th>
-                            <th>Branch</th>
-                        </tr>
-                        <tr ng-repeat="(key,tag) in tags" title="{{tag.title}}">
-                            <td>{{$index + 1}}<span class="badge bg-yellow pull-right" ng-show="tag.count">{{tag.count}}</span></td>
-                            <td>{{tag.app}}</td>
-                            <td>{{tag.tag}}</td>
-                            <td>{{tag.branch}}</td>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div ng-show="showTagTxt" class="box-body no-padding">
-                    <pre>{{tagTxt}}</pre>
                 </div>
             </div>
         </div>

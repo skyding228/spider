@@ -41,7 +41,7 @@ app.get('/spiderweb-node', function (req, res) {
     res.sendFile(__dirname + '/html/index.html');
 });
 
-app.get('/app', function (req, res) {
+app.get('/home', function (req, res) {
     res.sendFile(__dirname + '/html/home.html');
 });
 
