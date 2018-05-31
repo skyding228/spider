@@ -15,7 +15,7 @@
                         <input type="text" ng-model="search" ng-change="changeSearch();" name="table_search" class="form-control" placeholder="Search">
 
                         <div class="input-group-btn">
-                            <button class="btn btn-success">刷新<i ng-show="loading" class="fa fa-spinner fa-spin"></i></button>
+                            <button class="btn btn-success" ng-click="loadFiles();">刷新<i ng-show="loading" class="fa fa-spinner fa-spin"></i></button>
                         </div>
                     </div>
                 </div>

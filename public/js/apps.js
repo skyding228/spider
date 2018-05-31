@@ -284,5 +284,6 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
     $scope.changePwd = changePwd;
     $scope.isFile = isFile;
 
+    $scope.loadFiles = loadFiles;
     loadFiles();
 });
