@@ -17,7 +17,7 @@ module.exports = {
     singularity_root_dir:'/singularity/',
     docker_root_dir:'/var/lib/docker/',
     //the period of collect all hosts files,only used in master node
-    collect_interval_ms: 180 * 1000,
+    collect_interval_ms: 120 * 1000,
     //the period of send files to master, only used in agent node
     send_interval_ms: 60 * 1000,
     //the period of send new files
