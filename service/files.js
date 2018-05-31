@@ -192,10 +192,10 @@ function addFiles(files, host) {
         }
         FileMap[file.uri] = file;
     });
+    nginx.proxyFiles(files);
     if (newFiles.length) {
         sendFiles(pickToSend(newFiles));
         WS.sendFilesToAllWS(newFiles);
-        nginx.proxyFiles(newFiles);
     }
     return newFiles;
 }
