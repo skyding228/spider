@@ -5,6 +5,7 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
     $scope.files = [];
     $scope.search = null;
     $scope.pwdSegments = [];
+    $scope.loading = false;
     var VALIDITY_PERIOD = 180 * 1000;
     var FileWS = null, FileWSId = null;
     /**
@@ -57,12 +58,13 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
 
     function loadFilesUseWs() {
         if (!FileWSId) {
-            $myhttp.get(window.location.origin + GetRelativePath() + '/ws/new', function (data) {
+            $myhttp('loading',$scope).get(window.location.origin + GetRelativePath() + '/ws/new', function (data) {
                 FileWSId = data;
                 loadFilesUseWs();
             });
             return;
         }
+        $scope.loading = true;
         if (!FileWS) {
             FileWS = new WebSocket('ws://' + window.location.host + GetRelativePath() + '/ws/files/' + FileWSId);
             FileWS.onmessage = function (event) {
@@ -70,6 +72,7 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
                 console.log("receive " + files.length + " files!");
                 addFilesToTree(files);
                 $timeout(searchFile);
+                $scope.loading = false;
             };
             FileWS.onclose = function (event) {
                 console.log('webSocket closed!');

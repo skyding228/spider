@@ -5,6 +5,10 @@
             <div class="box  box-primary">
                 <div class="box-header">
                     <h3 class="box-title">Hosts</h3>
+
+                    <div class="box-tools">
+                        <button class="btn btn-success" ng-click="loadHosts();">刷新<i ng-show="hostLoading" class="fa fa-spinner fa-spin"></i></button>
+                    </div>
                 </div>
                 <div class="box-body no-padding">
                     <table class="table table-striped">

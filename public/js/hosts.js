@@ -8,9 +8,10 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     $scope.loading = 0;
     $scope.tagTxt = '';
     $scope.showTagTxt = false;
+    $scope.hostLoading = false;
 
-    function loadHosts() {
-        $myhttp.get('spider/hosts', function (data) {
+    $scope.loadHosts =function () {
+        $myhttp('hostLoading',$scope).get('spider/hosts', function (data) {
             data = data || [];
             data.forEach(host=> {
                 if (host.master) {
@@ -20,7 +21,6 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
             });
             $scope.hosts = data;
         });
-        setTimeout(loadHosts, 30000);
     }
 
     function removeLastSlash(url) {
@@ -116,5 +116,5 @@ require('app').register.controller('hostsController', function ($scope, $myhttp,
     $scope.loadAllTags = loadAllTags;
     $scope.getTagTxt = getTagTxt;
     $scope.changeShowTagTxt = changeShowTagTxt;
-    loadHosts();
+    $scope.loadHosts();
 });
