@@ -85,7 +85,7 @@ function execLn(absolute, link) {
 function watchNewDirs(dir, callback) {
     fs.watch(dir, {recursive: false}, function (event, dir) {
         if ('rename' === event) {
-            console.log('new file ' + dir);
+            console.original('new file ' + dir);
             callback(dir);
         }
     });
