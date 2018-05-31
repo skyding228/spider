@@ -46,7 +46,7 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
         } else {
             loadFilesUseHttp();
         }
-        setTimeout(loadFiles, VALIDITY_PERIOD);
+        //setTimeout(loadFiles, VALIDITY_PERIOD);
     }
 
     function loadFilesUseHttp() {
