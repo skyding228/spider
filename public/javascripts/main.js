@@ -8,6 +8,7 @@ var term,
 
 var Clock = new Date(), LastCommunicateTime = Clock.getTime(), TTL = 1000 * 60 * 30, HeartBeatMsg = '_heart_beat_';
 var NodeName = '<%=hostName%>' || 'spiderweb', CurrentStatus = null;
+NodeName = getQueryString('title') || NodeName;
 var Status = {
     connected: {favicon: 'green24.png', name: 'connected'},
     closed: {favicon: 'red24.png', name: 'closed'},
@@ -318,7 +319,7 @@ var current_receive_xfer;
 function runRealTerminal() {
     term.attach(socket);
     term.on('data', function (d) {
-        if(HeartBeatMsg === d){
+        if (HeartBeatMsg === d) {
             return;
         }
         LastCommunicateTime = Clock.getTime();
@@ -444,7 +445,7 @@ function heartbeat() {
     }, 30 * 1000);
 
 }
-(function init(){
+(function init() {
     runClock();
     heartbeat();
 })();
