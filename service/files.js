@@ -187,7 +187,7 @@ function addFiles(files, host) {
     files = addSegmentsAndHost(files, host);
     var newFiles = [];
     files.forEach(file=> {
-        if (!FileMap[file.uri]) {
+        if (!FileMap[file.uri] || FileMap[file.uri].host !== file.host) {
             newFiles.push(file);
         }
         FileMap[file.uri] = file;
