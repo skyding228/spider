@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var debug = process.env.DEBUG;
+console.log('debug = '+debug);
 function log() {
     if (!debug || 'false' === debug) {
         return;
