@@ -26,7 +26,7 @@ var ContainerIdFile = 'containerId';
 function linkDir(container) {
     var cmd = 'docker exec -i ' + container + ' bash -c "echo \\$ENV_INFO \\$INSTANCE_NAME \\$TASK_ID"';
     Exec(cmd, function (err, stdout, stderr) {
-        console.log(cmd, err, stdout, stderr);
+        err && console.log(cmd, err, stdout, stderr);
         if (err || !stdout) {
             return;
         }
@@ -45,7 +45,7 @@ function linkDir(container) {
             appLinks.execLn(absolute, link);
         });
         Exec('echo ' + container + ' >' + urls.resoleUri(absolute, ContainerIdFile), function (err, stdout, stderr) {
-            console.log('create container id file', err, stdout, stderr);
+            err && console.log('create container id file', err, stdout, stderr);
         });
     });
 }

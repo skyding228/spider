@@ -76,8 +76,6 @@ function execLn(absolute, link) {
     Exec(cmd, function (err, stdout, stderr) {
         if (err) {
             console.log(stderr);
-        } else {
-            console.log(cmd, stdout);
         }
     });
 }
