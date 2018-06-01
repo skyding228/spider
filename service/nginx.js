@@ -54,9 +54,9 @@ function updateLocations(locations) {
  * @param appName
  */
 function newLocation(path, url, appName) {
-    var location = {path: path, url: url};
+    var location = {path: path, url: url,headers:[]};
     if (appName) {
-        location.headers = [{key:AppNameHeader,value:appName}];
+        location.headers.push({key:AppNameHeader,value:appName});
     }
     return location;
 }
