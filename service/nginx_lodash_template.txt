@@ -1,3 +1,6 @@
 location /<%=path%>/{
+    <%if(headers){ headers.forEach(header=>{%>
+    proxy_set_header <%=header.key%> <%=header.value%>;
+    <%});}%>
     proxy_pass <%=url%>/;
 }

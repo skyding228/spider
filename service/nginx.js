@@ -17,6 +17,10 @@ var Path = require('path');
 var Fs = require('fs');
 var _ = require('lodash'); //https://lodash.com/docs/4.17.5
 var Exec = require('child_process').exec;
+/**
+ * {path:location}
+ * @type {{}}
+ */
 var Locations = {};
 
 var CONFIG_ROOT_DIR = '/etc/nginx/conf.d/';
@@ -27,7 +31,7 @@ var genLocation = _.template(Fs.readFileSync(Path.resolve(__dirname, 'nginx_loda
 function updateLocations(locations) {
     var hasNewProxy = false;
     locations.forEach(location => {
-        if(updateLocation(location.path, location.url)){
+        if (updateLocation(location)) {
             hasNewProxy = true;
         }
     });
@@ -35,21 +39,40 @@ function updateLocations(locations) {
         reload();
     }
 }
+/**
+ * {
+ *      path:
+ *      url:
+ *      headers:[{
+ *          key:
+ *          value:
+ *      }]
+ * }
+ * @param path
+ * @param url
+ * @param appName
+ */
+function newLocation(path, url, appName) {
+    var location = {path: path, url: url};
+    if (appName) {
+        location.headers = [{key:'app_name',value:appName}];
+    }
+    return location;
+}
 
-function updateLocation(path, url) {
-    if (Locations[path] === url) {
+function updateLocation(location) {
+    if (Locations[location.path].url === location.url) {
         return false;
     }
-    Locations[path] = url;
-    writeConfigFile(path, url);
+    Locations[location.path] = location;
+    writeConfigFile(location);
     return true;
 }
 
-function writeConfigFile(path, url) {
-    var location = {path: path, url: url};
+function writeConfigFile(location) {
     var config = genLocation(location);
     console.log(config);
-    var filePath = Path.resolve(CONFIG_ROOT_DIR, path + '.conf');
+    var filePath = Path.resolve(CONFIG_ROOT_DIR, location.path + '.conf');
     Fs.writeFileSync(filePath, config);
 }
 
@@ -96,10 +119,10 @@ function proxyHosts(hosts) {
     }
     var locations = [];
     hosts.forEach(host => {
-        if(host.master){
+        if (host.master) {
             return;
         }
-        locations.push({path: host.name, url: host.intraUrl});
+        locations.push(newLocation(host.name, host.intraUrl));
     });
     updateLocations(locations);
 }
@@ -110,8 +133,9 @@ function proxyFiles(files) {
     }
     var locations = [];
     files.forEach(file => {
-        if (file.location) {
-            locations.push(file.location);
+        if (file.segments.length > 2) {
+            var app = file.segments[0] + '.' + file.segments[1];
+            locations.push(newLocation(app, host.intraUrl, app));
         }
     });
     updateLocations(locations);
