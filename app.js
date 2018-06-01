@@ -52,13 +52,14 @@ var websockets = require('./routes/websockets');
 app.use('/ws', websockets);
 
 app.post('/terminals', function (req, res) {
-    var cmd = 'cd ' + config.root_dir + ' && su node ', appName = req.header('app_name');
+    var cmd = 'cd ' + config.root_dir + ' && su node ', appName = req.get(nginx.AppNameHeader);
     if (appName) {
         var containerId = runtimeLinks.getContainerId(appName);
         if (containerId) {
-            cmd = 'docker exec -it ' + containerId + ' bash';
+            cmd = 'echo docker exec -it ' + containerId + ' bash';
         }
     }
+    console.log('1',appName,cmd);
     var cols = parseInt(req.query.cols),
         rows = parseInt(req.query.rows),
         term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c', cmd], {
@@ -74,8 +75,11 @@ app.post('/terminals', function (req, res) {
     terminals[term.pid] = term;
     logs[term.pid] = '';
     term.on('data', function (data) {
-        console.log(new String(data));
-        logs[term.pid] += data;
+        console.log('2',new String(data));
+        if(logs[term.pid] !== undefined){
+            console.log('3',new String(data));
+            logs[term.pid] += data;
+        }
     });
     //term.write('su node \n');
     res.send(term.pid.toString());
@@ -97,7 +101,7 @@ app.ws('/terminals/:pid', function (ws, req) {
     var term = terminals[parseInt(req.params.pid)];
     console.log('Connected to terminal ' + term.pid);
     ws.send(logs[term.pid]);
-
+    delete logs[term.pid];
     term.on('data', function (data) {
         try {
             ws.send(data);
@@ -129,7 +133,6 @@ function closeTerm(term, ws) {
 
     // Clean things up
     delete terminals[term.pid];
-    delete logs[term.pid];
 }
 
 // catch 404 and forward to error handler

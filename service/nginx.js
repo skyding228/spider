@@ -25,6 +25,7 @@ var Locations = {};
 
 var CONFIG_ROOT_DIR = '/etc/nginx/conf.d/';
 var USE_NGINX = false;
+var AppNameHeader='app-name';
 
 var genLocation = _.template(Fs.readFileSync(Path.resolve(__dirname, 'nginx_lodash_template.txt')));
 
@@ -55,7 +56,7 @@ function updateLocations(locations) {
 function newLocation(path, url, appName) {
     var location = {path: path, url: url};
     if (appName) {
-        location.headers = [{key:'app_name',value:appName}];
+        location.headers = [{key:AppNameHeader,value:appName}];
     }
     return location;
 }
@@ -146,5 +147,6 @@ module.exports = {
     assignUrl: assignUrl,
     start: start,
     proxyHosts: proxyHosts,
-    proxyFiles: proxyFiles
+    proxyFiles: proxyFiles,
+    AppNameHeader:AppNameHeader
 };
