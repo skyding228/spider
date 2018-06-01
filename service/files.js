@@ -129,6 +129,7 @@ function addSegmentsAndHost(files, host) {
         }
         file.segments = trimSlash(file.path).split('/');
         file.uri = file.path;
+        file.hostUrl=host.intraUrl;
         file.tailUrl = resoleUri(file.location ? file.location.path : host.url, 'spiderweb-node?path=' + resoleUri(config.root_dir, file.path));
         file.downloadUrl = resoleUri(host.url, 'spider/download?path=' + resoleUri(config.root_dir, file.path));
         file.host = host.name;

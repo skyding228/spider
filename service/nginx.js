@@ -135,7 +135,7 @@ function proxyFiles(files) {
     files.forEach(file => {
         if (file.segments.length > 2) {
             var app = file.segments[0] + '.' + file.segments[1];
-            locations.push(newLocation(app, host.intraUrl, app));
+            locations.push(newLocation(app, file.hostUrl, app));
         }
     });
     updateLocations(locations);
