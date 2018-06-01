@@ -82,7 +82,7 @@ function removeLink(link) {
     if (!fs.existsSync(containerIdPath)) {
         return;
     }
-    var containerId = new String(fs.readFileSync(containerIdPath)).replace('\n','');
+    var containerId = new String(fs.readFileSync(containerIdPath)).replace('\n', '');
     var absoluteContainer = urls.resoleUri(DOCKER_ROOT_DIR, containerId);
     if (!fs.existsSync(absoluteContainer)) {
         try {
@@ -91,6 +91,15 @@ function removeLink(link) {
             console.log('remove ' + absoluteLink + ' error', e);
         }
     }
+}
+
+function getContainerId(appName) {
+    var appPath = appName.replace('.', '/');
+    var containerIdPath = urls.resoleUri(LOG_ROOT_DIR, appPath + '/' + ContainerIdFile);
+    if (!fs.existsSync(containerIdPath)) {
+        return null;
+    }
+    return new String(fs.readFileSync(containerIdPath)).replace('\n', '');
 }
 
 function removeExitedContainers() {
@@ -113,5 +122,6 @@ if (require.main === module) {
 
 module.exports = {
     init: init,
-    removeInvalidLinks: removeInvalidLinks
+    removeInvalidLinks: removeInvalidLinks,
+    getContainerId:getContainerId
 };

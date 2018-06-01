@@ -52,9 +52,16 @@ var websockets = require('./routes/websockets');
 app.use('/ws', websockets);
 
 app.post('/terminals', function (req, res) {
+    var cmd = 'cd ' + config.root_dir + ' && su node ', appName = req.header('app_name');
+    if (appName) {
+        var containerId = runtimeLinks.getContainerId(appName);
+        if (containerId) {
+            cmd = 'docker exec -it ' + containerId + ' bash';
+        }
+    }
     var cols = parseInt(req.query.cols),
         rows = parseInt(req.query.rows),
-        term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c', 'cd '+config.root_dir+' && su node '], {
+        term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c', cmd], {
             encoding: null,
             name: 'xterm-color',
             cols: cols || 80,
@@ -100,7 +107,7 @@ app.ws('/terminals/:pid', function (ws, req) {
 
     ws.on('message', function (msg) {
         //ignore heart beat messages
-        if(HeartBeatMsg !== msg){
+        if (HeartBeatMsg !== msg) {
             term.write(msg);
         }
     });
