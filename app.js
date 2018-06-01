@@ -56,10 +56,11 @@ app.post('/terminals', function (req, res) {
     if (appName) {
         var containerId = runtimeLinks.getContainerId(appName);
         if (containerId) {
-            cmd = 'echo docker exec -it ' + containerId + ' bash';
+            cmd = 'docker exec -it ' + containerId + ' bash';
+        }else{
+            cmd = 'echo 暂未找到'+appName+',请稍候刷新重试!';
         }
     }
-    console.log('1',appName,cmd);
     var cols = parseInt(req.query.cols),
         rows = parseInt(req.query.rows),
         term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c', cmd], {
@@ -75,9 +76,7 @@ app.post('/terminals', function (req, res) {
     terminals[term.pid] = term;
     logs[term.pid] = '';
     term.on('data', function (data) {
-        console.log('2',new String(data));
         if(logs[term.pid] !== undefined){
-            console.log('3',new String(data));
             logs[term.pid] += data;
         }
     });
