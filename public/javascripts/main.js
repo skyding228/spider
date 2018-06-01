@@ -336,6 +336,9 @@ function changeToDir() {
     var dir = getQueryString('dir'), file = getQueryString('file');
     if (!dir) {
         var path = getQueryString('path');
+        if(!path){
+            return;
+        }
         var index = path.lastIndexOf('/');
         if (index !== -1) {
             dir = path.substring(0, index);
