@@ -74,6 +74,7 @@ app.post('/terminals', function (req, res) {
     terminals[term.pid] = term;
     logs[term.pid] = '';
     term.on('data', function (data) {
+        console.log(data);
         logs[term.pid] += data;
     });
     //term.write('su node \n');
