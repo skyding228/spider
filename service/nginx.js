@@ -61,7 +61,7 @@ function newLocation(path, url, appName) {
 }
 
 function updateLocation(location) {
-    if (Locations[location.path].url === location.url) {
+    if (Locations[location.path] && Locations[location.path].url === location.url) {
         return false;
     }
     Locations[location.path] = location;
