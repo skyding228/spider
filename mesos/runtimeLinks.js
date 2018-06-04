@@ -111,12 +111,16 @@ function removeExitedContainers() {
 
 }
 
+function delayLinkdir(container){
+    //maybe the container command can not be executed when the directory was created ,so delay 30 seconds.
+    setTimeout(function(){
+        linkDir(container);
+    },30000);
+}
+
 function init() {
     initLinks();
-    appLinks.watchNewDirs(DOCKER_ROOT_DIR, function(){
-        //maybe the container command can not be executed when the directory was created ,so delay 30 seconds.
-        setTimeout(linkDir,30000);
-    });
+    appLinks.watchNewDirs(DOCKER_ROOT_DIR, delayLinkdir);
 }
 
 if (require.main === module) {
