@@ -81,6 +81,9 @@ function execLn(absolute, link) {
 }
 
 function watchNewDirs(dir, callback) {
+    if (!fs.existsSync(dir)) {
+        console.original(dir+' does not exist');
+    }
     fs.watch(dir, {recursive: false}, function (event, dir) {
         if ('rename' === event) {
             console.original('new file ' + dir);

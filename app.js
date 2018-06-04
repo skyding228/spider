@@ -125,6 +125,7 @@ app.ws('/terminals/:pid', function (ws, req) {
     });
 });
 function exitTerm(term){
+    //send ctrl+c
     term.write('');
     term.write('exit\n');
     term.write('exit\n');
