@@ -22,6 +22,7 @@ var appLinks = require('./appLinks');
 var DOCKER_ROOT_DIR = urls.resoleUri(config.docker_root_dir, 'containers');
 var LOG_ROOT_DIR = config.root_dir;
 var ContainerIdFile = 'containerId';
+var Initialized = false;
 
 function linkDir(container) {
     var cmd = 'docker exec -i ' + container + ' bash -c "echo \\$ENV_INFO \\$INSTANCE_NAME \\$TASK_ID"';
@@ -119,14 +120,19 @@ function delayLinkdir(container){
 }
 
 function init() {
+    if(Initialized){
+       return;
+    }
+    Initialized = true;
     initLinks();
     appLinks.watchNewDirs(DOCKER_ROOT_DIR, delayLinkdir);
+    //sync links every 1 hours
+    setInterval(initLinks,1*60*60*1000);
 }
 
 if (require.main === module) {
     init();
 }
-
 module.exports = {
     init: init,
     removeInvalidLinks: removeInvalidLinks,
