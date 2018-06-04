@@ -121,17 +121,20 @@ app.ws('/terminals/:pid', function (ws, req) {
 
     term.on('close', close);
     ws.on('close', function () {
-        term.write('exit\n');
-        term.write('exit\n');
-        term.write('exit\n');
+        exitTerm(term);
     });
 });
+function exitTerm(term){
+    term.write('exit\n');
+    term.write('exit\n');
+    term.write('exit\n');
+}
 
 function closeTerm(term, ws) {
     console.log('Closed terminal ' + term.pid);
     ws.close();
-    term.kill();
-
+    term.kill(9);
+    exitTerm(term);
     // Clean things up
     delete terminals[term.pid];
 }
