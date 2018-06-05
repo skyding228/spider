@@ -68,18 +68,22 @@ function removeLink(containerId) {
                 return;
             }
             if (env.startsWith(ENV_INFO)) {
-                func = env.substring(ENV_INFO.length + 1);
+                func = env.substring(ENV_INFO.length);
             } else if (env.startsWith(INSTANCE_NAME)) {
-                app = env.substring(INSTANCE_NAME.length + 1);
+                app = env.substring(INSTANCE_NAME.length);
             }
         });
         if (!func || !app) {
             return;
         }
-        var cmd = 'rm -rf ' + func + '/' + app;
-        Exec(cmd, function (err, stdout, stderr) {
-            err && console.log(cmd, err);
-        });
+        var appName = func + '/' + app;
+        var cmd = 'rm -rf ' + urls.resoleUri(LOG_ROOT_DIR,appName);
+        var nowContainerId = getContainerId(appName);
+        if(containerId.startsWith(nowContainerId)){
+            Exec(cmd, function (err, stdout, stderr) {
+                err && console.log(cmd, err);
+            });
+        }
     });
 }
 
