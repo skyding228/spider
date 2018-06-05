@@ -111,6 +111,5 @@ if (require.main === module) {
 }
 module.exports = {
     init: init,
-    removeInvalidLinks: removeInvalidLinks,
     getContainerId:getContainerId
 };
