@@ -26,7 +26,7 @@ function listenStart() {
         env: process.env
     });
     term.on('data', function (containerId) {
-        containerId = removeEnterKey(containerId);
+        containerId = removeEnterKey(new String(containerId));
         console.log(containerId + ' started');
         StartListeners.forEach(listener => {
             listener(containerId);
@@ -44,7 +44,7 @@ function listenStop() {
         env: process.env
     });
     term.on('data', function (containerId) {
-        containerId = removeEnterKey(containerId);
+        containerId = removeEnterKey(new String(containerId));
         console.log(containerId + ' stoped');
         StopListeners.forEach(listener => {
             listener(containerId);
@@ -53,7 +53,7 @@ function listenStop() {
 }
 //remove \n
 function removeEnterKey(str) {
-    return str.replace(/\n/, '');
+    return str.replace(/\n/, '').replace(/\r/,'');
 }
 /**
  * the callback will be invoked when a docker container start. the arguments is container id
