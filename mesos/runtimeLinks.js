@@ -53,22 +53,39 @@ function linkDir(containerId) {
     });
 }
 
-function removeLink(containerId){
-    var cmd = 'docker exec -i ' + containerId + ' bash -c "echo \\$ENV_INFO/\\$INSTANCE_NAME"';
+function removeLink(containerId) {
+    var cmd = 'docker inspect ' + containerId + " --format '{{range .Config.Env}}${{.}}{{end}}'";
     Exec(cmd, function (err, stdout, stderr) {
-        err && console.log(cmd, err, stdout, stderr);
+        err && console.log(cmd, err);
         if (err || !stdout) {
             return;
         }
-        Exec('rm -rf ' + stdout, function (err, stdout, stderr) {
-
+        var envs = stdout.split('$');
+        var ENV_INFO = 'ENV_INFO=', INSTANCE_NAME = 'INSTANCE_NAME=';
+        var func, app = null;
+        envs.forEach(env=> {
+            if (!env) {
+                return;
+            }
+            if (env.startsWith(ENV_INFO)) {
+                func = env.substring(ENV_INFO.length + 1);
+            } else if (env.startsWith(INSTANCE_NAME)) {
+                app = env.substring(INSTANCE_NAME.length + 1);
+            }
+        });
+        if (!func || !app) {
+            return;
+        }
+        var cmd = 'rm -rf ' + func + '/' + app;
+        Exec(cmd, function (err, stdout, stderr) {
+            err && console.log(cmd, err);
         });
     });
 }
 
 function initLinks() {
-    Exec('docker ps -q',function(err,stdout,stderr){
-        if(!stdout){
+    Exec('docker ps -q', function (err, stdout, stderr) {
+        if (!stdout) {
             return;
         }
         var containers = stdout.split('\n');
@@ -97,8 +114,8 @@ function removeExitedContainers() {
 }
 
 function init() {
-    if(Initialized){
-       return;
+    if (Initialized) {
+        return;
     }
     Initialized = true;
     initLinks();
@@ -111,5 +128,7 @@ if (require.main === module) {
 }
 module.exports = {
     init: init,
-    getContainerId:getContainerId
+    getContainerId: getContainerId
 };
+
+//docker inspect f1b278fff2275d14e0db53bc61f8c968df359574633fd941a345abec5adfa165 --format '{{range .Config.Env}}{{.}}\n{{end}}'
