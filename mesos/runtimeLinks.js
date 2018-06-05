@@ -18,14 +18,16 @@ var config = require('../service/configuration');
 var Exec = require('child_process').exec;
 var ExecSync = require('child_process').execSync;
 var appLinks = require('./appLinks');
+var dockerListener = require('./dockerListener');
 
 var DOCKER_ROOT_DIR = urls.resoleUri(config.docker_root_dir, 'containers');
 var LOG_ROOT_DIR = config.root_dir;
 var ContainerIdFile = 'containerId';
 var Initialized = false;
 
-function linkDir(container) {
-    var cmd = 'docker exec -i ' + container + ' bash -c "echo \\$ENV_INFO \\$INSTANCE_NAME \\$TASK_ID"';
+
+function linkDir(containerId) {
+    var cmd = 'docker exec -i ' + containerId + ' bash -c "echo \\$ENV_INFO \\$INSTANCE_NAME \\$TASK_ID"';
     Exec(cmd, function (err, stdout, stderr) {
         err && console.log(cmd, err, stdout, stderr);
         if (err || !stdout) {
@@ -45,53 +47,35 @@ function linkDir(container) {
             var link = urls.resoleUri(funcDir, app);
             appLinks.execLn(absolute, link);
         });
-        Exec('echo ' + container + ' >' + urls.resoleUri(absolute, ContainerIdFile), function (err, stdout, stderr) {
+        Exec('echo ' + containerId + ' >' + urls.resoleUri(absolute, ContainerIdFile), function (err, stdout, stderr) {
             err && console.log('create container id file', err, stdout, stderr);
         });
     });
 }
 
-function initLinks() {
-    removeExitedContainers();
-    var containers = appLinks.listDir(DOCKER_ROOT_DIR);
-    containers.forEach(container => {
-        linkDir(container);
-    });
-    removeInvalidLinks();
-}
-/**
- * remove the links that the containers exited.
- */
-function removeInvalidLinks() {
-    removeExitedContainers();
-    var funcs = appLinks.listDir(LOG_ROOT_DIR);
-    var links = [];
-    funcs.forEach(func => {
-        var apps = appLinks.listDir(urls.resoleUri(LOG_ROOT_DIR, func));
-        apps.forEach(app => {
-            links.push(func + '/' + app);
+function removeLink(containerId){
+    var cmd = 'docker exec -i ' + containerId + ' bash -c "echo \\$ENV_INFO/\\$INSTANCE_NAME"';
+    Exec(cmd, function (err, stdout, stderr) {
+        err && console.log(cmd, err, stdout, stderr);
+        if (err || !stdout) {
+            return;
+        }
+        Exec('rm -rf ' + stdout, function (err, stdout, stderr) {
+
         });
-    });
-    links.forEach(link => {
-        removeLink(link);
     });
 }
 
-function removeLink(link) {
-    var absoluteLink = urls.resoleUri(LOG_ROOT_DIR, link);
-    var containerIdPath = urls.resoleUri(absoluteLink, ContainerIdFile);
-    if (!fs.existsSync(containerIdPath)) {
-        return;
-    }
-    var containerId = new String(fs.readFileSync(containerIdPath)).replace('\n', '');
-    var absoluteContainer = urls.resoleUri(DOCKER_ROOT_DIR, containerId);
-    if (!fs.existsSync(absoluteContainer)) {
-        try {
-            ExecSync('rm -f ' + absoluteLink);
-        } catch (e) {
-            console.log('remove ' + absoluteLink + ' error', e);
+function initLinks() {
+    Exec('docker ps -q',function(err,stdout,stderr){
+        if(!stdout){
+            return;
         }
-    }
+        var containers = stdout.split('\n');
+        containers.forEach(container => {
+            linkDir(container);
+        });
+    });
 }
 
 function getContainerId(appName) {
@@ -105,18 +89,11 @@ function getContainerId(appName) {
 
 function removeExitedContainers() {
     try {
+        // the running containers will not be removed because of "device is busying"
         ExecSync('rm -rf ' + urls.resoleUri(DOCKER_ROOT_DIR, '/*'));
     } catch (e) {
         console.log('removeExitedContainers error xxxxxxxxxxxxxxxxxxx ');
     }
-
-}
-
-function delayLinkdir(container){
-    //maybe the container command can not be executed when the directory was created ,so delay 30 seconds.
-    setTimeout(function(){
-        linkDir(container);
-    },30000);
 }
 
 function init() {
@@ -125,9 +102,8 @@ function init() {
     }
     Initialized = true;
     initLinks();
-    appLinks.watchNewDirs(DOCKER_ROOT_DIR, delayLinkdir);
-    //sync links every 1 hours
-    setInterval(initLinks,1*60*60*1000);
+    dockerListener.onStart(linkDir);
+    dockerListener.onStop(removeLink);
 }
 
 if (require.main === module) {

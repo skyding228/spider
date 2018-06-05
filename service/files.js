@@ -20,7 +20,6 @@ var request = require('request');
 var console = require('./console');
 var WS = require('../service/ws');
 var utils = require('./utils').urls;
-var runtimeLinks = require('../mesos/runtimeLinks');
 var nginx = require('./nginx');
 
 var PATH = require('path');
@@ -170,7 +169,6 @@ function trimSlash(path) {
 
 function getLocalFiles() {
     var fileList = [];
-    runtimeLinks.removeInvalidLinks();
     listFilesRecursively(config.root_dir, fileList);
     return fileList;
 }

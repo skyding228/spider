@@ -13,8 +13,9 @@
  */
 var pty = require('node-pty');
 var StartListeners = [];
+var StopListeners = [];
 
-function listen() {
+function listenStart() {
     var cmd = "docker events --filter 'event=start' --format '{{.ID}}'";
     var term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c', cmd], {
         encoding: null,
@@ -30,16 +31,42 @@ function listen() {
         });
     });
 }
+function listenStop() {
+    var cmd = "docker events --filter 'event=stop' --format '{{.ID}}'";
+    var term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', ['-c', cmd], {
+        encoding: null,
+        name: 'xterm-color',
+        cols: 80,
+        rows: 24,
+        cwd: process.env.PWD,
+        env: process.env
+    });
+    term.on('data', function (containerId) {
+        StopListeners.forEach(listener => {
+            listener(containerId);
+        });
+    });
+}
 /**
- * the callback will be invoked when a docker container create. the arguments is container id
+ * the callback will be invoked when a docker container start. the arguments is container id
  * @param callback
  */
 function onStart(callback) {
     StartListeners.push(callback);
 }
 
-listen();
+/**
+ * the callback will be invoked when a docker container stop. the arguments is container id
+ * @param callback
+ */
+function onStop(callback) {
+    StopListeners.push(callback);
+}
+
+listenStart();
+listenStop();
 
 module.exports = {
-    onStart: onStart
+    onStart: onStart,
+    onStop:onStop
 };
