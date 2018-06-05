@@ -210,10 +210,9 @@ require('app').register.controller('appsController', function ($scope, $myhttp, 
         }
         return files;
     }
-
+    //remove TTL condition
     function isOverdueFile(file, now) {
-        now = now || new Date().getTime();
-        return now - VALIDITY_PERIOD > file.updateAt;
+        return false;
     }
 
     function changeSearch() {
