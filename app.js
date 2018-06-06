@@ -18,6 +18,7 @@ var Init = require('./service/init');
 var appLinks = require('./mesos/appLinks');
 var runtimeLinks = require('./mesos/runtimeLinks');
 var HeartBeatMsg = '_heart_beat_';
+var urls = require('./service/utils').urls;
 
 
 var terminals = {},
@@ -51,14 +52,19 @@ app.use('/spider', spider);
 var websockets = require('./routes/websockets');
 app.use('/ws', websockets);
 
+app.get('/app/:id', function (req, res) {
+    var master = hosts.getMaster() || hosts.getLocal().url;
+    res.redirect(urls.resoleUri(master, req.params.id + '/'));
+});
+
 app.post('/terminals', function (req, res) {
     var cmd = 'cd ' + config.root_dir + ' && su node ', appName = req.get(nginx.AppNameHeader);
     if (appName) {
         var containerId = runtimeLinks.getContainerId(appName);
         if (containerId) {
             cmd = 'docker exec -it ' + containerId + ' bash';
-        }else{
-            cmd = 'echo 暂未找到'+appName+',请稍候刷新重试!';
+        } else {
+            cmd = 'echo 暂未找到' + appName + ',请稍候刷新重试!';
         }
     }
     var cols = parseInt(req.query.cols),
@@ -76,7 +82,7 @@ app.post('/terminals', function (req, res) {
     terminals[term.pid] = term;
     logs[term.pid] = '';
     term.on('data', function (data) {
-        if(logs[term.pid] !== undefined){
+        if (logs[term.pid] !== undefined) {
             logs[term.pid] += data;
         }
     });
@@ -124,7 +130,7 @@ app.ws('/terminals/:pid', function (ws, req) {
         exitTerm(term);
     });
 });
-function exitTerm(term){
+function exitTerm(term) {
     //send ctrl+c
     term.write('');
     term.write('exit\n');
