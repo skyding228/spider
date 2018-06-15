@@ -30,7 +30,7 @@ var terminalContainer = document.getElementById('terminal-container'),
 
 function setTerminalSize() {
     var width = '100%';
-    var height = document.documentElement.clientHeight - 60 +'px';
+    var height = document.documentElement.clientHeight - 100 +'px';
     terminalContainer.style.width = width;
     terminalContainer.style.height = height;
     term.fit();
